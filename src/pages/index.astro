@@ -3,6 +3,7 @@ import Layout from '@/components/Layout.astro';
 import SectionHeading from '@/components/SectionHeading.astro';
 import RouteCard from '@/components/RouteCard.astro';
 import ServiceCard from '@/components/ServiceCard.astro';
+import FeaturedAdvisorCard from '@/components/FeaturedAdvisorCard.astro';
 import { site } from '@/lib/site';
 import { advisorsData } from '@/data/advisors';
 import { routes } from '@/data/routes';
@@ -16,6 +17,19 @@ const lastReviewed = currentMonth.toLocaleDateString('en-GB', {
   month: 'long',
   year: 'numeric',
 });
+
+const featuredAdvisorSlugs = [
+  'gp-bullhound',
+  'postlethwaite-solicitors',
+  'burges-salmon',
+  'cazenove-capital',
+  'hawsons-corporate-finance',
+  'moore-kingston-smith',
+];
+
+const featuredAdvisors = featuredAdvisorSlugs
+  .map((slug) => advisorsData.find((advisor) => advisor.slug === slug))
+  .filter((advisor): advisor is (typeof advisorsData)[number] => Boolean(advisor));
 ---
 
 <Layout title={site.headline} description={site.subheadline}>
@@ -43,6 +57,24 @@ const lastReviewed = currentMonth.toLocaleDateString('en-GB', {
           </div>
         </div>
       </div>
+    </div>
+  </section>
+
+  <section class="border-b border-line bg-white/90">
+    <div class="container-page py-4 sm:py-5">
+      <div class="flex flex-wrap items-center gap-3 text-xs uppercase tracking-[0.16em] text-brass">
+        <span class="font-semibold text-ink">Advisors featured include</span>
+        <div class="flex flex-wrap gap-x-2 gap-y-1 text-calm normal-case tracking-normal">
+          {['Cavendish Corporate Finance', 'Arrowpoint Advisory', 'GP Bullhound', 'Burges Salmon', 'Moore Kingston Smith', 'Brabners', 'Saffery', 'Cazenove Capital'].map((name) => <span>{name}</span>)}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="container-page py-12 sm:py-16">
+    <SectionHeading eyebrow="Featured advisors" title="Firms owners compare first" copy="A tighter selection of firms spanning different routes, sectors and locations." />
+    <div class="mt-8 grid gap-5 lg:grid-cols-2 xl:grid-cols-3">
+      {featuredAdvisors.map((advisor) => advisor ? <FeaturedAdvisorCard advisor={advisor} /> : null)}
     </div>
   </section>
 

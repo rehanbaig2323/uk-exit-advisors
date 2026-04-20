@@ -1,0 +1,22 @@
+---
+const { advisor } = Astro.props;
+
+const chips = [advisor.advisorTypes[0], advisor.exitRoutes[0], advisor.location].filter(Boolean).slice(0, 3);
+---
+
+<article class="flex h-full flex-col overflow-hidden rounded-3xl border border-line bg-gradient-to-br from-stone-50 via-white to-stone-100 p-6 shadow-md shadow-stone-200/60 transition-transform duration-200 hover:-translate-y-0.5 hover:shadow-lg">
+  <div class="flex items-start justify-between gap-4">
+    <div>
+      <p class="text-xs uppercase tracking-[0.16em] text-brass">Featured advisor</p>
+      <h3 class="mt-2 text-xl font-semibold tracking-tight text-ink">{advisor.name}</h3>
+      <p class="mt-1 text-sm text-calm">{advisor.location}</p>
+    </div>
+    <a href={`/advisors/${advisor.slug}/`} class="text-sm font-medium text-ink underline decoration-stone-300 underline-offset-4 hover:decoration-ink">View profile →</a>
+  </div>
+
+  <p class="mt-4 text-sm leading-6 text-calm">{advisor.shortDescription}</p>
+
+  <div class="mt-5 flex flex-wrap gap-2">
+    {chips.map((chip) => <span class="rounded-full border border-stone-200 bg-white px-3 py-1 text-xs text-calm">{chip}</span>)}
+  </div>
+</article>
