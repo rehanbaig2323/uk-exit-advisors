@@ -1,0 +1,21 @@
+---
+import { site } from '@/lib/site';
+
+const {
+  title,
+  description,
+  canonical,
+} = Astro.props;
+
+const pageTitle = title ? `${title} | ${site.name}` : site.name;
+const pageDescription = description ?? site.description;
+---
+
+<title>{pageTitle}</title>
+<meta name="description" content={pageDescription} />
+<link rel="canonical" href={canonical ?? new URL(Astro.url.pathname, Astro.site).toString()} />
+<meta property="og:site_name" content={site.name} />
+<meta property="og:title" content={pageTitle} />
+<meta property="og:description" content={pageDescription} />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary_large_image" />

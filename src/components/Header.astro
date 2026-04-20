@@ -1,0 +1,18 @@
+---
+import { site } from '@/lib/site';
+---
+
+<header class="border-b border-line bg-white/85 backdrop-blur-md">
+  <div class="container-page flex items-center justify-between py-5">
+    <a href="/" class="text-sm font-semibold tracking-tight text-ink">{site.name}</a>
+    <nav class="hidden gap-6 text-sm text-calm md:flex">
+      <a href="/advisors/" class="hover:text-ink">Advisors</a>
+      <a href="/for-advisors/" class="hover:text-ink">For Advisors</a>
+      <a href="/routes/trade-sale/" class="hover:text-ink">Exit Routes</a>
+      <a href="/services/corporate-finance-ma/" class="hover:text-ink">Services</a>
+      <a href="/about/" class="hover:text-ink">About</a>
+      <a href="/contact/" class="hover:text-ink">Contact</a>
+    </nav>
+    <a href="/advisors/" class="button-secondary px-4 py-2">Browse directory</a>
+  </div>
+</header>

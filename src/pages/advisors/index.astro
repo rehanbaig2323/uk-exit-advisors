@@ -1,0 +1,100 @@
+---
+import Layout from '@/components/Layout.astro';
+import SectionHeading from '@/components/SectionHeading.astro';
+import AdvisorCard from '@/components/AdvisorCard.astro';
+import { advisorsData, advisorFilters } from '@/data/advisors';
+
+const title = 'Advisors';
+---
+
+<Layout title={title} description="Browse UK exit advisers with search, filters and verified profile metadata.">
+  <section class="container-page py-16 sm:py-20">
+    <SectionHeading eyebrow="Directory" title="Compare trusted UK exit advisors" copy="Search by firm, location, route or service. Every card keeps the same metadata structure so comparisons stay easy." />
+
+    <div class="mt-8 grid gap-4 rounded-2xl border border-stone-200 bg-white p-4 shadow-soft lg:grid-cols-4">
+      <label class="block">
+        <span class="text-xs font-medium uppercase tracking-[0.16em] text-slate-500">Search</span>
+        <input id="advisor-search" type="search" placeholder="Search firms" class="mt-2 w-full rounded-xl border border-stone-200 bg-white px-4 py-3 text-sm outline-none ring-0 placeholder:text-slate-400 focus:border-slate-400" />
+      </label>
+      <label class="block">
+        <span class="text-xs font-medium uppercase tracking-[0.16em] text-slate-500">Route</span>
+        <select id="route-filter" class="mt-2 w-full rounded-xl border border-stone-200 bg-white px-4 py-3 text-sm outline-none focus:border-slate-400">
+          <option value="">All routes</option>
+          {advisorFilters.exitRoutes.map((route) => <option value={route}>{route}</option>)}
+        </select>
+      </label>
+      <label class="block">
+        <span class="text-xs font-medium uppercase tracking-[0.16em] text-slate-500">Service</span>
+        <select id="service-filter" class="mt-2 w-full rounded-xl border border-stone-200 bg-white px-4 py-3 text-sm outline-none focus:border-slate-400">
+          <option value="">All services</option>
+          {advisorFilters.services.map((service) => <option value={service}>{service}</option>)}
+        </select>
+      </label>
+      <label class="block">
+        <span class="text-xs font-medium uppercase tracking-[0.16em] text-slate-500">Location</span>
+        <select id="location-filter" class="mt-2 w-full rounded-xl border border-stone-200 bg-white px-4 py-3 text-sm outline-none focus:border-slate-400">
+          <option value="">All locations</option>
+          {advisorFilters.locations.map((location) => <option value={location}>{location}</option>)}
+        </select>
+      </label>
+    </div>
+
+    <p id="advisor-count" class="mt-4 text-sm text-slate-500"></p>
+
+    <div id="advisor-grid" class="mt-8 grid gap-5 lg:grid-cols-2 xl:grid-cols-3">
+      {advisorsData.map((advisor) => (
+        <div
+          class="advisor-item"
+          data-name={advisor.name.toLowerCase()}
+          data-location={advisor.location}
+          data-services={advisor.services.join('|')}
+          data-routes={advisor.exitRoutes.join('|')}
+        >
+          <AdvisorCard advisor={advisor} />
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <script is:inline>
+    const searchInput = document.getElementById('advisor-search');
+    const routeFilter = document.getElementById('route-filter');
+    const serviceFilter = document.getElementById('service-filter');
+    const locationFilter = document.getElementById('location-filter');
+    const count = document.getElementById('advisor-count');
+    const items = Array.from(document.querySelectorAll('.advisor-item'));
+
+    const applyFilters = () => {
+      const query = searchInput.value.trim().toLowerCase();
+      const route = routeFilter.value;
+      const service = serviceFilter.value;
+      const location = locationFilter.value;
+
+      let visible = 0;
+      items.forEach((item) => {
+        const name = item.dataset.name || '';
+        const itemLocation = item.dataset.location || '';
+        const services = item.dataset.services || '';
+        const routes = item.dataset.routes || '';
+
+        const matchesQuery = !query || [name, itemLocation, services, routes].some((field) => field.includes(query));
+        const matchesRoute = !route || routes.split('|').includes(route);
+        const matchesService = !service || services.split('|').includes(service);
+        const matchesLocation = !location || itemLocation === location;
+
+        const show = matchesQuery && matchesRoute && matchesService && matchesLocation;
+        item.hidden = !show;
+        if (show) visible += 1;
+      });
+
+      count.textContent = `${visible} advisor${visible === 1 ? '' : 's'} shown`;
+    };
+
+    [searchInput, routeFilter, serviceFilter, locationFilter].forEach((element) => {
+      element.addEventListener('input', applyFilters);
+      element.addEventListener('change', applyFilters);
+    });
+
+    applyFilters();
+  </script>
+</Layout>
