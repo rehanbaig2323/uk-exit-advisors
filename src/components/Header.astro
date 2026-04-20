@@ -1,10 +1,23 @@
 ---
 import { site } from '@/lib/site';
+import { searchIndex } from '@/data/search-index';
+
+const searchIndexJson = JSON.stringify(searchIndex);
 ---
 
-<header class="border-b border-line bg-white/85 backdrop-blur-md">
-  <div class="container-page flex items-center justify-between py-5">
+<header class="sticky top-0 z-50 border-b border-line bg-white/85 backdrop-blur-md">
+  <div class="container-page flex flex-wrap items-center gap-4 py-4">
     <a href="/" class="text-sm font-semibold tracking-tight text-ink">{site.name}</a>
+
+    <form action="/advisors/" method="get" class="relative min-w-0 flex-1 md:max-w-md" data-search-form>
+      <label class="sr-only" for="site-search">Search advisors</label>
+      <input id="site-search" name="q" type="search" placeholder="Search advisors" autocomplete="off" class="w-full rounded-full border border-stone-200 bg-white px-4 py-2 text-sm text-slate-700 outline-none focus:border-slate-400" />
+      <div id="site-search-results" class="absolute left-0 right-0 top-full z-50 mt-2 hidden overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-lg"></div>
+      <noscript>
+        <a href="/advisors/" class="mt-2 inline-block text-xs text-calm underline decoration-stone-300 underline-offset-4">Browse the directory</a>
+      </noscript>
+    </form>
+
     <nav class="hidden gap-6 text-sm text-calm md:flex">
       <a href="/advisors/" class="hover:text-ink">Advisors</a>
       <a href="/routes/trade-sale/" class="hover:text-ink">Exit Routes</a>
@@ -15,4 +28,46 @@ import { site } from '@/lib/site';
     </nav>
     <a href="/advisors/" class="button-secondary px-4 py-2">Browse directory</a>
   </div>
+
+  <script is:inline>
+    const searchIndex = ${searchIndexJson};
+    const input = document.getElementById('site-search');
+    const results = document.getElementById('site-search-results');
+    const form = document.querySelector('[data-search-form]');
+
+    const render = (items) => {
+      if (!items.length) {
+        results.classList.add('hidden');
+        results.innerHTML = '';
+        return;
+      }
+
+      results.innerHTML = items.slice(0, 5).map((item) => `
+        <a href="/advisors/${item.slug}/" class="block border-b border-stone-100 px-4 py-3 text-sm text-slate-700 last:border-b-0 hover:bg-stone-50">
+          <div class="font-medium text-slate-900">${item.name}</div>
+          <div class="text-xs text-slate-500">${item.location || ''}</div>
+        </a>
+      `).join('');
+      results.classList.remove('hidden');
+    };
+
+    input.addEventListener('input', () => {
+      const query = input.value.trim().toLowerCase();
+      if (!query) {
+        results.classList.add('hidden');
+        results.innerHTML = '';
+        return;
+      }
+      const matches = searchIndex.filter((item) => item.terms.includes(query));
+      render(matches);
+    });
+
+    input.addEventListener('blur', () => {
+      window.setTimeout(() => results.classList.add('hidden'), 120);
+    });
+
+    form.addEventListener('submit', () => {
+      results.classList.add('hidden');
+    });
+  </script>
 </header>
