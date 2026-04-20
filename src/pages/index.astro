@@ -30,6 +30,15 @@ const featuredAdvisorSlugs = [
 const featuredAdvisors = featuredAdvisorSlugs
   .map((slug) => advisorsData.find((advisor) => advisor.slug === slug))
   .filter((advisor): advisor is (typeof advisorsData)[number] => Boolean(advisor));
+
+const recentDeals = [
+  { client: 'Equal Experts', description: 'Transition to Employee Ownership', firmSlug: 'moore-kingston-smith', firmName: 'Moore Kingston Smith' },
+  { client: 'Nuaware', description: 'Sale to Exclusive Networks', firmSlug: 'moore-kingston-smith', firmName: 'Moore Kingston Smith' },
+  { client: 'Big Drop Brewing Co', description: 'Investment by Panoramic Growth Equity', firmSlug: 'price-bailey', firmName: 'Price Bailey' },
+  { client: 'MACD', description: 'Acquisition by Foconis', firmSlug: 'brabners', firmName: 'Brabners' },
+  { client: 'TTP Group', description: '£276 million transition to an Employee Ownership Trust', firmSlug: 'rve-corporate-finance', firmName: 'RVE Corporate Finance' },
+  { client: 'Synergy Vision', description: 'Transition to Employee Ownership Trust', firmSlug: 'postlethwaite-solicitors', firmName: 'Postlethwaite Solicitors' },
+];
 ---
 
 <Layout title={site.headline} description={site.subheadline}>
@@ -83,6 +92,22 @@ const featuredAdvisors = featuredAdvisorSlugs
     <div class="mt-10 grid gap-4 md:grid-cols-2">
       <div class="card p-6"><p class="font-medium text-slate-900">Clear metadata</p><p class="mt-2 text-sm text-slate-600">City, services, routes and verification.</p></div>
       <div class="card p-6"><p class="font-medium text-slate-900">Simple comparison</p><p class="mt-2 text-sm text-slate-600">Search and filter fast.</p></div>
+    </div>
+  </section>
+
+  <section class="container-page py-8">
+    <SectionHeading eyebrow="Activity" title="Recent deals advised" copy="Examples drawn from the public deal notes already in the directory." />
+    <div class="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+      {recentDeals.map((deal) => (
+        <article class="card flex h-full flex-col p-6">
+          <h3 class="text-lg font-semibold text-slate-900">{deal.client}</h3>
+          <p class="mt-2 text-sm leading-6 text-slate-600">{deal.description}</p>
+          <div class="mt-6 text-sm text-slate-600">
+            <span class="font-medium text-slate-900">Adviser:</span>{' '}
+            <a href={`/advisors/${deal.firmSlug}/`} class="underline decoration-stone-300 underline-offset-4 hover:text-slate-900">{deal.firmName} →</a>
+          </div>
+        </article>
+      ))}
     </div>
   </section>
 
