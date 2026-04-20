@@ -63,6 +63,7 @@ export function normalizeNotableWorkItem(value: string): string {
   let item = String(value || '').trim();
   item = item.replace(/^[\s,;:.]+/, '').replace(/[\s,;:.]+$/g, '');
   item = item.replace(/^(and|plus)\s+/i, '');
+  item = item.replace(/\s+/g, ' ').trim();
   if (!item) return '';
   item = item.charAt(0).toUpperCase() + item.slice(1);
   return item.replace(/[.,;]+$/g, '');
