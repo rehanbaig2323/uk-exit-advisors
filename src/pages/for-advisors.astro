@@ -10,12 +10,14 @@ const tiers = [
   },
   {
     name: 'Enhanced Listing',
-    price: '£X/mo',
-    features: ['Everything in Free', 'Firm description (up to 120 words)', 'Up to 3 named key people', 'Up to 5 notable deals', 'Priority ranking within sector and region', 'Monthly enquiry analytics'],
+    price: '£97/mo',
+    annual: '£97/mo · or £970/yr (save £194)',
+    features: ['Everything in Free', 'Firm description (up to 120 words)', 'Up to 3 named key people', 'Up to 5 notable deals', 'Priority ranking within sector and region', 'Monthly enquiry analytics — profile views, inbound clicks to your site, referring search terms and visitor geography'],
   },
   {
     name: 'Featured Advisor',
-    price: '£Y/mo',
+    price: '£297/mo',
+    annual: '£297/mo · or £2,970/yr (save £594)',
     features: ['Everything in Enhanced', 'Homepage Featured advisors placement', 'Sponsored position on matching route pages', 'Monthly newsletter feature', 'Quarterly deal-announcement feature'],
   },
 ];
@@ -71,6 +73,7 @@ const faqs = [
             </div>
             <p class="rounded-full bg-mist px-3 py-1 text-sm font-medium text-cedar">{tier.price}</p>
           </div>
+          <p class="mt-3 text-sm text-slate-600">{tier.annual || tier.price}</p>
           <ul class="mt-6 space-y-3 text-sm leading-6 text-slate-600">
             {tier.features.map((feature) => <li>{feature}</li>)}
           </ul>

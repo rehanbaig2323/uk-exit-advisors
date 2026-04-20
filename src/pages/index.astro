@@ -92,17 +92,20 @@ const organizationJsonLd = {
   </section>
 
   <section class="container-page py-12 sm:py-16">
-    <SectionHeading eyebrow="Featured advisors" title="Firms owners compare first" copy="A tighter selection of firms spanning different routes, sectors and locations." />
+    <SectionHeading eyebrow="Directory highlights" title="A tighter selection across routes, sectors and locations." copy="Currently an editorial selection. Paid featured placements launching soon." />
     <div class="mt-8 grid gap-5 lg:grid-cols-2 xl:grid-cols-3">
       {featuredAdvisors.map((advisor) => advisor ? <FeaturedAdvisorCard advisor={advisor} /> : null)}
     </div>
   </section>
 
   <section class="container-page py-16 sm:py-20">
-    <SectionHeading eyebrow="Trust" title="Built for owner decisions" copy="Clear adviser data, simple comparison, no clutter." />
-    <div class="mt-10 grid gap-4 md:grid-cols-2">
-      <div class="card p-6"><p class="font-medium text-slate-900">Clear metadata</p><p class="mt-2 text-sm text-slate-600">City, services, routes and verification.</p></div>
-      <div class="card p-6"><p class="font-medium text-slate-900">Simple comparison</p><p class="mt-2 text-sm text-slate-600">Search and filter fast.</p></div>
+    <SectionHeading eyebrow="Owners" title="Why owners use this site" />
+    <div class="mt-10 card p-6">
+      <ul class="space-y-4 text-sm leading-7 text-slate-600">
+        <li><span class="font-medium text-slate-900">Independent</span> - No firm pays to rank higher in search. Listings are ordered by sector fit and location.</li>
+        <li><span class="font-medium text-slate-900">Specialist only</span> - Every firm listed has verifiable exit-advisory work. We don't list generalists.</li>
+        <li><span class="font-medium text-slate-900">No lead forms</span> - Contact firms directly. We don't capture or sell your details.</li>
+      </ul>
     </div>
   </section>
 
