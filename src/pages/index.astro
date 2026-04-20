@@ -12,10 +12,14 @@ import { services } from '@/data/services';
 const pageTitle = 'UK business exit advisors';
 const pageDescription = 'Independent directory of UK business exit advisors for trade sales, EOTs, MBOs, succession and partial exits.';
 const firmCount = advisorsData.length;
-const currentMonth = new Date();
-currentMonth.setDate(1);
-const lastReviewed = currentMonth.toLocaleDateString('en-GB', {
-  day: 'numeric',
+const buildDate = new Date();
+const reviewMonth = new Date(buildDate.getFullYear(), buildDate.getMonth(), 1);
+const nextReviewMonth = new Date(buildDate.getFullYear(), buildDate.getMonth() + 1, 1);
+const reviewMonthLabel = reviewMonth.toLocaleDateString('en-GB', {
+  month: 'long',
+  year: 'numeric',
+});
+const nextReviewLabel = nextReviewMonth.toLocaleDateString('en-GB', {
   month: 'long',
   year: 'numeric',
 });
@@ -72,7 +76,8 @@ const organizationJsonLd = {
               <p><span class="font-semibold text-ink">{firmCount} specialist firms</span></p>
               <p>Covering deals £1m-£300m</p>
               <p>Trade sale · EOT · MBO · Succession · Partial exit</p>
-              <p>Last reviewed: {lastReviewed}</p>
+              <p>Last reviewed: {reviewMonthLabel}</p>
+              <p>Next review: {nextReviewLabel}</p>
             </div>
           </div>
         </div>
