@@ -1,8 +1,6 @@
 ---
 import { site } from '@/lib/site';
 import { searchIndex } from '@/data/search-index';
-
-const searchIndexJson = JSON.stringify(searchIndex);
 ---
 
 <header class="sticky top-0 z-50 border-b border-line bg-white/85 backdrop-blur-md">
@@ -29,8 +27,7 @@ const searchIndexJson = JSON.stringify(searchIndex);
     <a href="/advisors/" class="button-secondary px-4 py-2">Browse directory</a>
   </div>
 
-  <script is:inline>
-    const searchIndex = ${searchIndexJson};
+  <script define:vars={{ searchIndex }}>
     const input = document.getElementById('site-search');
     const results = document.getElementById('site-search-results');
     const form = document.querySelector('[data-search-form]');

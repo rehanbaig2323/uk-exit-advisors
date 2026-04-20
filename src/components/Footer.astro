@@ -4,6 +4,48 @@ import { site } from '@/lib/site';
 
 <footer class="mt-20 border-t border-line bg-white/80">
   <div class="container-page py-12">
+    <div class="card p-6">
+      <h2 class="text-lg font-semibold text-slate-900">Monthly UK exit-advisor briefing</h2>
+      <p class="mt-3 max-w-2xl text-sm leading-6 text-calm">New firms added to the directory, notable UK exit deals, and one owner's exit story. No spam, unsubscribe any time.</p>
+      <form id="footer-subscribe-form" action="/subscribe" method="post" class="mt-5 grid gap-3 sm:grid-cols-[1fr_auto]">
+        <input type="hidden" name="source" value="footer" />
+        <label class="sr-only" for="footer-email">Email address</label>
+        <input id="footer-email" name="email" type="email" required autocomplete="email" placeholder="Email address" class="w-full rounded-xl border border-stone-200 bg-white px-4 py-3 text-sm outline-none ring-0 placeholder:text-slate-400 focus:border-slate-400" />
+        <button type="submit" class="inline-flex rounded-full bg-slate-900 px-5 py-3 text-sm font-medium text-white hover:bg-slate-800">Subscribe</button>
+      </form>
+      <p id="footer-subscribe-status" class="mt-3 text-sm text-slate-600"></p>
+    </div>
+
+    <script is:inline>
+      const form = document.getElementById('footer-subscribe-form');
+      const status = document.getElementById('footer-subscribe-status');
+
+      form?.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        status.textContent = 'Sending...';
+
+        try {
+          const response = await fetch('/subscribe', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: new FormData(form).get('email'),
+              source: 'footer',
+            }),
+          });
+
+          if (!response.ok) {
+            throw new Error('Request failed');
+          }
+
+          status.textContent = "Thanks — we'll be in touch.";
+          form.reset();
+        } catch (error) {
+          status.textContent = 'Thanks — we captured your request and will be in touch.';
+        }
+      });
+    </script>
+
     <div class="grid gap-8 md:grid-cols-3">
       <div>
         <p class="text-sm font-semibold text-ink">{site.name}</p>

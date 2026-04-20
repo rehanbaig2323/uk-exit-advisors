@@ -1,6 +1,9 @@
 export async function onRequestPost(context: { request: Request }) {
   // TODO: set RESEND_API_KEY in the Cloudflare Pages dashboard before relying on live email delivery.
-  const payload = await context.request.json().catch(() => ({}));
+  const contentType = context.request.headers.get('content-type') || '';
+  const payload = contentType.includes('application/json')
+    ? await context.request.json().catch(() => ({}))
+    : Object.fromEntries(await context.request.formData().catch(() => new FormData()));
   console.log('subscribe payload', payload);
 
   const apiKey = (context as { env?: { RESEND_API_KEY?: string } }).env?.RESEND_API_KEY;

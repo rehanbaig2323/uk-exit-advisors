@@ -154,7 +154,7 @@ const topAdvisorsByRoute = Object.fromEntries(
     </div>
   </section>
 
-  <script is:inline>
+  <script define:vars={{ advisorsByRoute: topAdvisorsByRoute }}>
     const form = document.getElementById('route-finder-form');
     const submitButton = document.getElementById('recommend-button');
     const routeName = document.getElementById('route-name');
@@ -180,8 +180,6 @@ const topAdvisorsByRoute = Object.fromEntries(
       succession: 'Succession suits owners planning a staged handover rather than a fast sale.',
       partialExit: 'A partial exit works when you want to de-risk now but keep some upside later.',
     };
-
-    const advisorsByRoute = ${JSON.stringify(topAdvisorsByRoute)};
 
     const allQuestionNames = ['goal', 'management', 'value', 'employees', 'timing'];
 
