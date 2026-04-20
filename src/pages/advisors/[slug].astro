@@ -20,6 +20,13 @@ const sourceEntries = sources.map((source) => ({
   label: new URL(source).hostname.replace(/^www\./, ''),
 }));
 const notableWork = (advisor.notable_work || []).map(normalizeNotableWorkItem).filter(Boolean);
+const profileDescription = (() => {
+  const sourceText = advisor.long_description || advisor.short_description;
+  const firstSentence = sourceText.split(/(?<=[.!?])\s+/)[0] || sourceText;
+  const prefix = [advisor.firm_name, advisor.hq_city].filter(Boolean).join(' · ');
+  const description = [prefix, firstSentence].filter(Boolean).join(' · ');
+  return description.length > 155 ? `${description.slice(0, 152).trimEnd()}...` : description;
+})();
 
 const profileUrl = new URL(`/advisors/${advisor.slug}/`, Astro.site).toString();
 const ogImage = new URL(`/advisors/${advisor.slug}/og.svg/`, Astro.site).toString();
@@ -29,8 +36,14 @@ const structuredData = {
   '@type': 'ProfessionalService',
   name: advisor.firm_name,
   url: advisor.website,
-  description: advisor.short_description,
-  areaServed: advisor.regions_served || [],
+  description: advisor.long_description || advisor.short_description,
+  address: advisor.hq_city
+    ? {
+        '@type': 'PostalAddress',
+        addressLocality: advisor.hq_city,
+        addressCountry: 'GB',
+      }
+    : undefined,
   email: advisor.email || undefined,
   telephone: advisor.phone || undefined,
   sameAs: advisor.linkedin ? [advisor.linkedin] : undefined,
@@ -39,7 +52,7 @@ const structuredData = {
 const claimUrl = `mailto:info@ukexitadvisors.co.uk?subject=Claim%20or%20correct%20profile%20for%20${encodeURIComponent(advisor.firm_name)}`;
 ---
 
-<Layout title={`${advisor.firm_name} — UK Exit Advisors`} description={advisor.short_description} canonical={profileUrl} image={ogImage}>
+<Layout fullTitle={`${advisor.firm_name} — UK exit advisor profile`} description={profileDescription} canonical={profileUrl} image={ogImage}>
   <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
   <section class="container-page py-16 sm:py-20">
     <div class="max-w-4xl">

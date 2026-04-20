@@ -6,9 +6,10 @@ const {
   description,
   canonical,
   image,
+  fullTitle,
 } = Astro.props;
 
-const pageTitle = title ? (title.includes(site.name) ? title : `${title} | ${site.name}`) : site.name;
+const pageTitle = fullTitle ?? (title ? (title.includes(site.name) ? title : `${title} | ${site.name}`) : site.name);
 const pageDescription = description ?? site.description;
 ---
 

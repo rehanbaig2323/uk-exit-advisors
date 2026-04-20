@@ -9,8 +9,8 @@ import { advisorsData } from '@/data/advisors';
 import { routes } from '@/data/routes';
 import { services } from '@/data/services';
 
-const pageTitle = 'UK business exit advisors';
-const pageDescription = 'Independent directory of UK business exit advisors for trade sales, EOTs, MBOs, succession and partial exits.';
+const pageTitle = 'UK Exit Advisors — the independent directory of UK business-exit firms';
+const pageDescription = 'Compare 15 specialist UK exit advisors by sector, deal size and location. Covering trade sale, EOT, MBO, succession and partial exit. Independent, no lead forms, no commission.';
 const firmCount = advisorsData.length;
 const buildDate = new Date();
 const reviewMonth = new Date(buildDate.getFullYear(), buildDate.getMonth(), 1);
@@ -52,10 +52,14 @@ const organizationJsonLd = {
   name: 'UK Exit Advisors',
   url: new URL('/', Astro.site).toString(),
   description: pageDescription,
+  founder: {
+    '@type': 'Person',
+    name: 'Rehan Baig',
+  },
 };
 ---
 
-<Layout title={pageTitle} description={pageDescription}>
+<Layout fullTitle={pageTitle} description={pageDescription}>
   <script type="application/ld+json" set:html={JSON.stringify(organizationJsonLd)} />
   <section class="border-b border-line bg-white/75">
     <div class="container-page py-20 sm:py-24">
