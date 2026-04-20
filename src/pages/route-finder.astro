@@ -129,13 +129,7 @@ const topAdvisorsByRoute = Object.fromEntries(
         </fieldset>
 
         <div class="card p-6">
-          <label class="block text-sm font-medium text-slate-900" for="email-copy">Send me a copy of these results + a monthly UK exit-advisor briefing.</label>
-          <input id="email-copy" name="email" type="email" autocomplete="email" placeholder="Email address" class="mt-3 w-full rounded-xl border border-stone-200 bg-white px-4 py-3 text-sm outline-none ring-0 placeholder:text-slate-400 focus:border-slate-400" />
-          <label class="mt-4 flex items-center gap-3 text-sm text-slate-700">
-            <input type="checkbox" name="briefing" class="h-4 w-4 rounded border-stone-300 text-slate-900 focus:ring-slate-900" />
-            <span>Monthly briefing</span>
-          </label>
-          <button type="submit" class="mt-5 inline-flex rounded-full bg-slate-900 px-5 py-3 text-sm font-medium text-white hover:bg-slate-800">Get recommendation</button>
+          <button id="recommend-button" type="submit" disabled class="inline-flex rounded-full bg-slate-900 px-5 py-3 text-sm font-medium text-white opacity-50 hover:bg-slate-800 disabled:cursor-not-allowed disabled:hover:bg-slate-900">Get recommendation</button>
         </div>
       </form>
 
@@ -145,15 +139,31 @@ const topAdvisorsByRoute = Object.fromEntries(
         <p id="route-summary" class="mt-3 text-sm leading-7 text-slate-600">Your recommendation will appear here.</p>
 
         <div class="mt-6 grid gap-4 md:grid-cols-3" id="route-advisors"></div>
+
+        <div id="subscribe-panel" class="mt-8 border-t border-line pt-6" hidden>
+          <p class="text-sm font-medium text-slate-900">Send me a copy of these results + a monthly UK exit-advisor briefing.</p>
+          <form id="subscribe-form" class="mt-4 grid gap-3 sm:grid-cols-[1fr_auto]">
+            <input id="email-copy" name="email" type="email" autocomplete="email" placeholder="Email address" class="w-full rounded-xl border border-stone-200 bg-white px-4 py-3 text-sm outline-none ring-0 placeholder:text-slate-400 focus:border-slate-400" />
+            <button type="submit" class="inline-flex rounded-full bg-slate-900 px-5 py-3 text-sm font-medium text-white hover:bg-slate-800">Send results</button>
+          </form>
+          <p id="subscribe-status" class="mt-3 text-sm text-slate-600"></p>
+        </div>
+
+        <button id="start-over" type="button" class="mt-6 text-sm font-medium text-slate-900 underline decoration-stone-300 underline-offset-4 hover:decoration-slate-900" hidden>Start over</button>
       </section>
     </div>
   </section>
 
   <script is:inline>
     const form = document.getElementById('route-finder-form');
+    const submitButton = document.getElementById('recommend-button');
     const routeName = document.getElementById('route-name');
     const routeSummary = document.getElementById('route-summary');
     const routeAdvisors = document.getElementById('route-advisors');
+    const subscribePanel = document.getElementById('subscribe-panel');
+    const subscribeForm = document.getElementById('subscribe-form');
+    const subscribeStatus = document.getElementById('subscribe-status');
+    const startOver = document.getElementById('start-over');
 
     const labels = {
       tradeSale: 'Trade Sale',
@@ -172,6 +182,25 @@ const topAdvisorsByRoute = Object.fromEntries(
     };
 
     const advisorsByRoute = ${JSON.stringify(topAdvisorsByRoute)};
+
+    const allQuestionNames = ['goal', 'management', 'value', 'employees', 'timing'];
+
+    const isComplete = () => allQuestionNames.every((name) => form.querySelector(`input[name="${name}"]:checked`));
+
+    const updateSubmitState = () => {
+      submitButton.disabled = !isComplete();
+      submitButton.classList.toggle('opacity-50', submitButton.disabled);
+    };
+
+    const resetResults = () => {
+      routeName.textContent = 'Select answers to see a route';
+      routeSummary.textContent = 'Your recommendation will appear here.';
+      routeAdvisors.innerHTML = '';
+      subscribePanel.hidden = true;
+      subscribeStatus.textContent = '';
+      startOver.hidden = true;
+      subscribeForm.reset();
+    };
 
     const scoreRoute = (answers) => {
       const scores = { tradeSale: 0, eot: 0, mbo: 0, succession: 0, partialExit: 0 };
@@ -280,22 +309,67 @@ const topAdvisorsByRoute = Object.fromEntries(
         .map(
           (advisor) => `
             <a href="/advisors/${advisor.slug}/" class="card block p-5 hover:-translate-y-0.5 hover:shadow-soft">
-              <h3 class="text-base font-semibold text-slate-900">${advisor.firm_name}</h3>
-              <p class="mt-2 text-sm text-slate-600">${advisor.hq_city || ''}</p>
+              <h3 class="text-base font-semibold text-slate-900">${advisor.name}</h3>
+              <p class="mt-2 text-sm text-slate-600">${advisor.location || ''}</p>
             </a>
           `,
         )
         .join('');
     };
 
+    form.addEventListener('change', updateSubmitState);
+
     form.addEventListener('submit', (event) => {
       event.preventDefault();
+      if (!isComplete()) return;
 
       const answers = Object.fromEntries(new FormData(form).entries());
       const routeKey = scoreRoute(answers);
       routeName.textContent = labels[routeKey];
       routeSummary.textContent = descriptions[routeKey];
       renderAdvisors(routeKey);
+      subscribePanel.hidden = false;
+      startOver.hidden = false;
+      subscribeStatus.textContent = '';
+
+      subscribeForm.dataset.route = routeKey;
     });
+
+    subscribeForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const email = new FormData(subscribeForm).get('email');
+      const recommendedRoute = routeName.textContent;
+
+      subscribeStatus.textContent = 'Sending...';
+
+      try {
+        const response = await fetch('/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email,
+            recommended_route: recommendedRoute,
+            source: 'route-finder',
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Request failed');
+        }
+
+        subscribeStatus.textContent = "Thanks — we'll be in touch.";
+      } catch (error) {
+        subscribeStatus.textContent = 'Thanks — we captured your request and will be in touch.';
+      }
+    });
+
+    startOver.addEventListener('click', () => {
+      form.reset();
+      resetResults();
+      updateSubmitState();
+    });
+
+    resetResults();
+    updateSubmitState();
   </script>
 </Layout>
