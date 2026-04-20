@@ -1,0 +1,301 @@
+---
+import Layout from '@/components/Layout.astro';
+import { advisorsData } from '@/data/advisors';
+
+const questionOptions = {
+  goal: [
+    { value: 'max-price', label: 'Maximum price' },
+    { value: 'culture', label: 'Protecting company culture and legacy' },
+    { value: 'stay-involved', label: 'Staying involved for a few more years' },
+    { value: 'clean-break', label: 'Full clean break as soon as possible' },
+  ],
+  management: [
+    { value: 'yes-buy', label: 'Yes, and they want to buy' },
+    { value: 'yes-no-buy', label: "Yes, but they don't want to buy" },
+    { value: 'no', label: 'No, not yet' },
+  ],
+  value: [
+    { value: 'under-2', label: 'Under £2m' },
+    { value: '2-10', label: '£2m–£10m' },
+    { value: '10-50', label: '£10m–£50m' },
+    { value: 'over-50', label: 'Over £50m' },
+  ],
+  employees: [
+    { value: 'essential', label: 'Essential' },
+    { value: 'nice', label: 'Nice to have' },
+    { value: 'no-factor', label: 'Not a factor' },
+  ],
+  timing: [
+    { value: '12', label: 'Within 12 months' },
+    { value: '1-3', label: '1–3 years' },
+    { value: '3plus', label: '3+ years / not sure' },
+  ],
+} as const;
+
+const routeLabels = {
+  tradeSale: 'Trade Sale',
+  eot: 'EOT',
+  mbo: 'MBO',
+  succession: 'Succession',
+  partialExit: 'Partial Exit',
+} as const;
+
+const routeMatchers: Record<keyof typeof routeLabels, string[]> = {
+  tradeSale: ['trade sale'],
+  eot: ['eot', 'employee ownership'],
+  mbo: ['mbo'],
+  succession: ['succession'],
+  partialExit: ['partial exit', 'investment'],
+};
+
+const routeOrder: Array<keyof typeof routeLabels> = ['tradeSale', 'eot', 'mbo', 'succession', 'partialExit'];
+
+const topAdvisorsByRoute = Object.fromEntries(
+  routeOrder.map((routeKey) => {
+    const matches = advisorsData.filter((advisor) =>
+      advisor.exitRoutes.some((exitRoute) => routeMatchers[routeKey].some((needle) => exitRoute.toLowerCase().includes(needle))),
+    );
+    return [routeKey, matches.slice(0, 3)];
+  }),
+);
+---
+
+<Layout title="Route finder — UK Exit Advisors" description="Answer five questions to get a suggested exit route and a short list of matching UK firms.">
+  <section class="container-page py-16 sm:py-20">
+    <div class="max-w-4xl">
+      <p class="eyebrow">Route finder</p>
+      <h1 class="mt-3 text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">Which exit route fits you?</h1>
+      <p class="mt-4 text-lg leading-8 text-slate-600">Answer five short questions and get a route recommendation plus a few firms from the directory that commonly work on that type of deal.</p>
+
+      <form id="route-finder-form" class="mt-10 grid gap-6">
+        <fieldset class="card p-6">
+          <legend class="text-lg font-semibold text-slate-900">1. What&apos;s your primary goal from the exit?</legend>
+          <div class="mt-4 grid gap-3">
+            {questionOptions.goal.map((option) => (
+              <label class="flex cursor-pointer items-center gap-3 rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm text-slate-700 focus-within:border-slate-400">
+                <input type="radio" name="goal" value={option.value} class="h-4 w-4 border-stone-300 text-slate-900 focus:ring-slate-900" />
+                <span>{option.label}</span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+
+        <fieldset class="card p-6">
+          <legend class="text-lg font-semibold text-slate-900">2. Is there a management team already capable of running the business?</legend>
+          <div class="mt-4 grid gap-3">
+            {questionOptions.management.map((option) => (
+              <label class="flex cursor-pointer items-center gap-3 rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm text-slate-700 focus-within:border-slate-400">
+                <input type="radio" name="management" value={option.value} class="h-4 w-4 border-stone-300 text-slate-900 focus:ring-slate-900" />
+                <span>{option.label}</span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+
+        <fieldset class="card p-6">
+          <legend class="text-lg font-semibold text-slate-900">3. What&apos;s the approximate enterprise value range?</legend>
+          <div class="mt-4 grid gap-3">
+            {questionOptions.value.map((option) => (
+              <label class="flex cursor-pointer items-center gap-3 rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm text-slate-700 focus-within:border-slate-400">
+                <input type="radio" name="value" value={option.value} class="h-4 w-4 border-stone-300 text-slate-900 focus:ring-slate-900" />
+                <span>{option.label}</span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+
+        <fieldset class="card p-6">
+          <legend class="text-lg font-semibold text-slate-900">4. How important is it that employees share in the outcome?</legend>
+          <div class="mt-4 grid gap-3">
+            {questionOptions.employees.map((option) => (
+              <label class="flex cursor-pointer items-center gap-3 rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm text-slate-700 focus-within:border-slate-400">
+                <input type="radio" name="employees" value={option.value} class="h-4 w-4 border-stone-300 text-slate-900 focus:ring-slate-900" />
+                <span>{option.label}</span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+
+        <fieldset class="card p-6">
+          <legend class="text-lg font-semibold text-slate-900">5. When would you ideally want to exit?</legend>
+          <div class="mt-4 grid gap-3">
+            {questionOptions.timing.map((option) => (
+              <label class="flex cursor-pointer items-center gap-3 rounded-2xl border border-stone-200 bg-white px-4 py-3 text-sm text-slate-700 focus-within:border-slate-400">
+                <input type="radio" name="timing" value={option.value} class="h-4 w-4 border-stone-300 text-slate-900 focus:ring-slate-900" />
+                <span>{option.label}</span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+
+        <div class="card p-6">
+          <label class="block text-sm font-medium text-slate-900" for="email-copy">Send me a copy of these results + a monthly UK exit-advisor briefing.</label>
+          <input id="email-copy" name="email" type="email" autocomplete="email" placeholder="Email address" class="mt-3 w-full rounded-xl border border-stone-200 bg-white px-4 py-3 text-sm outline-none ring-0 placeholder:text-slate-400 focus:border-slate-400" />
+          <label class="mt-4 flex items-center gap-3 text-sm text-slate-700">
+            <input type="checkbox" name="briefing" class="h-4 w-4 rounded border-stone-300 text-slate-900 focus:ring-slate-900" />
+            <span>Monthly briefing</span>
+          </label>
+          <button type="submit" class="mt-5 inline-flex rounded-full bg-slate-900 px-5 py-3 text-sm font-medium text-white hover:bg-slate-800">Get recommendation</button>
+        </div>
+      </form>
+
+      <section id="route-result" class="mt-10 card p-6" aria-live="polite">
+        <p class="text-sm font-medium uppercase tracking-[0.16em] text-brass">Recommendation</p>
+        <h2 id="route-name" class="mt-2 text-2xl font-semibold text-slate-950">Select answers to see a route</h2>
+        <p id="route-summary" class="mt-3 text-sm leading-7 text-slate-600">Your recommendation will appear here.</p>
+
+        <div class="mt-6 grid gap-4 md:grid-cols-3" id="route-advisors"></div>
+      </section>
+    </div>
+  </section>
+
+  <script is:inline>
+    const form = document.getElementById('route-finder-form');
+    const routeName = document.getElementById('route-name');
+    const routeSummary = document.getElementById('route-summary');
+    const routeAdvisors = document.getElementById('route-advisors');
+
+    const labels = {
+      tradeSale: 'Trade Sale',
+      eot: 'EOT',
+      mbo: 'MBO',
+      succession: 'Succession',
+      partialExit: 'Partial Exit',
+    };
+
+    const descriptions = {
+      tradeSale: 'A broad sale to an external buyer is the strongest fit when price and a clean break matter most.',
+      eot: 'Employee ownership fits owners who want to preserve culture and reward employees.',
+      mbo: 'A management buyout fits businesses with a capable team already in place and wanting to buy.',
+      succession: 'Succession suits owners planning a staged handover rather than a fast sale.',
+      partialExit: 'A partial exit works when you want to de-risk now but keep some upside later.',
+    };
+
+    const advisorsByRoute = ${JSON.stringify(topAdvisorsByRoute)};
+
+    const scoreRoute = (answers) => {
+      const scores = { tradeSale: 0, eot: 0, mbo: 0, succession: 0, partialExit: 0 };
+
+      switch (answers.goal) {
+        case 'max-price':
+          scores.tradeSale += 3;
+          scores.partialExit += 1;
+          break;
+        case 'culture':
+          scores.eot += 3;
+          scores.succession += 2;
+          break;
+        case 'stay-involved':
+          scores.partialExit += 3;
+          scores.succession += 2;
+          break;
+        case 'clean-break':
+          scores.tradeSale += 3;
+          scores.mbo += 1;
+          break;
+      }
+
+      switch (answers.management) {
+        case 'yes-buy':
+          scores.mbo += 3;
+          scores.succession += 1;
+          break;
+        case 'yes-no-buy':
+          scores.tradeSale += 2;
+          scores.succession += 1;
+          break;
+        case 'no':
+          scores.tradeSale += 2;
+          scores.eot += 1;
+          scores.partialExit += 1;
+          break;
+      }
+
+      switch (answers.value) {
+        case 'under-2':
+          scores.mbo += 1;
+          scores.succession += 1;
+          scores.partialExit += 1;
+          break;
+        case '2-10':
+          scores.tradeSale += 2;
+          scores.eot += 2;
+          scores.mbo += 2;
+          break;
+        case '10-50':
+          scores.tradeSale += 3;
+          scores.eot += 2;
+          scores.partialExit += 1;
+          break;
+        case 'over-50':
+          scores.tradeSale += 3;
+          scores.partialExit += 2;
+          break;
+      }
+
+      switch (answers.employees) {
+        case 'essential':
+          scores.eot += 3;
+          scores.succession += 1;
+          break;
+        case 'nice':
+          scores.eot += 1;
+          scores.succession += 1;
+          scores.partialExit += 1;
+          break;
+        case 'no-factor':
+          scores.tradeSale += 1;
+          scores.mbo += 1;
+          scores.partialExit += 1;
+          break;
+      }
+
+      switch (answers.timing) {
+        case '12':
+          scores.tradeSale += 3;
+          scores.mbo += 2;
+          break;
+        case '1-3':
+          scores.partialExit += 3;
+          scores.succession += 2;
+          scores.eot += 1;
+          break;
+        case '3plus':
+          scores.succession += 3;
+          scores.eot += 2;
+          break;
+      }
+
+      return Object.entries(scores).sort((a, b) => b[1] - a[1])[0][0];
+    };
+
+    const renderAdvisors = (routeKey) => {
+      const advisors = advisorsByRoute[routeKey] || [];
+      if (!advisors.length) {
+        routeAdvisors.innerHTML = '<p class="text-sm text-slate-600">No matching firms in the current dataset.</p>';
+        return;
+      }
+
+      routeAdvisors.innerHTML = advisors
+        .map(
+          (advisor) => `
+            <a href="/advisors/${advisor.slug}/" class="card block p-5 hover:-translate-y-0.5 hover:shadow-soft">
+              <h3 class="text-base font-semibold text-slate-900">${advisor.firm_name}</h3>
+              <p class="mt-2 text-sm text-slate-600">${advisor.hq_city || ''}</p>
+            </a>
+          `,
+        )
+        .join('');
+    };
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      const answers = Object.fromEntries(new FormData(form).entries());
+      const routeKey = scoreRoute(answers);
+      routeName.textContent = labels[routeKey];
+      routeSummary.textContent = descriptions[routeKey];
+      renderAdvisors(routeKey);
+    });
+  </script>
+</Layout>
