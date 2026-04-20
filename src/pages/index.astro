@@ -1,15 +1,11 @@
 ---
 import Layout from '@/components/Layout.astro';
 import SectionHeading from '@/components/SectionHeading.astro';
-import AdvisorCard from '@/components/AdvisorCard.astro';
 import RouteCard from '@/components/RouteCard.astro';
 import ServiceCard from '@/components/ServiceCard.astro';
 import { site } from '@/lib/site';
-import { advisorsData } from '@/data/advisors';
 import { routes } from '@/data/routes';
 import { services } from '@/data/services';
-
-const featuredAdvisors = advisorsData.filter((advisor) => advisor.featured);
 ---
 
 <Layout title={site.headline} description={site.subheadline}>
@@ -31,7 +27,7 @@ const featuredAdvisors = advisorsData.filter((advisor) => advisor.featured);
             <div class="grid gap-4 sm:grid-cols-2">
               <div>
                 <p class="text-xs uppercase tracking-[0.16em] text-brass">Directory</p>
-                <p class="mt-2 text-sm leading-6 text-calm">Replace the six sample firms with live firms.</p>
+                <p class="mt-2 text-sm leading-6 text-calm">15 verified firms currently listed.</p>
               </div>
             <div>
               <p class="text-xs uppercase tracking-[0.16em] text-brass">Coverage</p>
@@ -71,13 +67,6 @@ const featuredAdvisors = advisorsData.filter((advisor) => advisor.featured);
     <SectionHeading eyebrow="Adviser types" title="Specialists by need" />
     <div class="mt-8 grid gap-4 md:grid-cols-3">
       {services.map((service) => <ServiceCard service={service} />)}
-    </div>
-  </section>
-
-  <section class="container-page py-8">
-    <SectionHeading eyebrow="Featured advisors" title="A short starting list" copy="Sample firms, ready to replace." />
-    <div class="mt-8 grid gap-5 lg:grid-cols-3">
-      {featuredAdvisors.map((advisor) => <AdvisorCard advisor={advisor} />)}
     </div>
   </section>
 
