@@ -4,8 +4,18 @@ import SectionHeading from '@/components/SectionHeading.astro';
 import RouteCard from '@/components/RouteCard.astro';
 import ServiceCard from '@/components/ServiceCard.astro';
 import { site } from '@/lib/site';
+import { advisorsData } from '@/data/advisors';
 import { routes } from '@/data/routes';
 import { services } from '@/data/services';
+
+const firmCount = advisorsData.length;
+const currentMonth = new Date();
+currentMonth.setDate(1);
+const lastReviewed = currentMonth.toLocaleDateString('en-GB', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+});
 ---
 
 <Layout title={site.headline} description={site.subheadline}>
@@ -14,33 +24,21 @@ import { services } from '@/data/services';
       <div class="grid gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
         <div class="max-w-3xl">
           <span class="hero-kicker">{site.domain}</span>
-          <h1 class="mt-5 text-4xl font-semibold tracking-tight text-slate-950 sm:text-6xl">{site.headline}</h1>
-          <p class="mt-6 max-w-2xl text-lg leading-8 text-slate-600">{site.subheadline}</p>
+          <h1 class="mt-5 text-4xl font-semibold tracking-tight text-slate-950 sm:text-6xl">The independent directory of UK business-exit advisors.</h1>
+          <p class="mt-6 max-w-2xl text-lg leading-8 text-slate-600">For owners planning a trade sale, EOT, MBO, succession or partial exit - compare specialist UK firms by sector, deal size and location. No lead forms. No commission. No paywall for owners.</p>
           <div class="mt-8 flex flex-wrap gap-3">
             <a href="/advisors/" class="button-primary">Browse advisors</a>
-            <a href="/contact/" class="button-secondary">Claim a profile</a>
+            <a href="/route-finder/" class="button-secondary">Which exit route fits me?</a>
           </div>
         </div>
 
         <div class="card-subtle p-6 sm:p-8">
-          <div class="rounded-3xl border border-line bg-white p-6">
-            <div class="grid gap-4 sm:grid-cols-2">
-              <div>
-                <p class="text-xs uppercase tracking-[0.16em] text-brass">Directory</p>
-                <p class="mt-2 text-sm leading-6 text-calm">15 verified firms currently listed.</p>
-              </div>
-            <div>
-              <p class="text-xs uppercase tracking-[0.16em] text-brass">Coverage</p>
-              <p class="mt-2 text-sm leading-6 text-calm">Trade sale, EOT, MBO, succession and partial exit.</p>
-            </div>
-            <div>
-                <p class="text-xs uppercase tracking-[0.16em] text-brass">Profiles</p>
-                <p class="mt-2 text-sm leading-6 text-calm">Free and enhanced options.</p>
-              </div>
-              <div>
-                <p class="text-xs uppercase tracking-[0.16em] text-brass">Updates</p>
-                <p class="mt-2 text-sm leading-6 text-calm">Simple claim and correction path.</p>
-              </div>
+          <div class="rounded-3xl border border-line bg-white p-6 shadow-sm">
+            <div class="space-y-4 text-sm leading-6 text-calm">
+              <p><span class="font-semibold text-ink">{firmCount} specialist firms</span></p>
+              <p>Covering deals £1m-£300m</p>
+              <p>Trade sale · EOT · MBO · Succession · Partial exit</p>
+              <p>Last reviewed: {lastReviewed}</p>
             </div>
           </div>
         </div>
