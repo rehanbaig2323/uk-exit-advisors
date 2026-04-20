@@ -1,58 +1,132 @@
 ---
 import Layout from '@/components/Layout.astro';
-import { advisorsData } from '@/data/advisors';
+import { advisorRecords } from '@/data/advisors';
 
 export function getStaticPaths() {
-  return advisorsData.map((advisor) => ({ params: { slug: advisor.slug }, props: { advisor } }));
+  return advisorRecords.map((advisor) => ({ params: { slug: advisor.slug }, props: { advisor } }));
 }
 
 const { advisor } = Astro.props;
+
+const tags = [
+  ...(advisor.adviser_types || []),
+  ...(advisor.exit_routes || []),
+  ...(advisor.sectors || []),
+];
+
+const sources = [advisor.evidence_url_1, advisor.evidence_url_2, advisor.evidence_url_3].filter(Boolean);
+
+const profileUrl = new URL(`/advisors/${advisor.slug}/`, Astro.site).toString();
+const ogImage = new URL(`/advisors/${advisor.slug}/og.svg/`, Astro.site).toString();
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@type': 'ProfessionalService',
+  name: advisor.firm_name,
+  url: advisor.website,
+  description: advisor.short_description,
+  areaServed: advisor.regions_served || [],
+  email: advisor.email || undefined,
+  telephone: advisor.phone || undefined,
+  sameAs: advisor.linkedin ? [advisor.linkedin] : undefined,
+};
 ---
 
-<Layout title={advisor.name} description={advisor.shortDescription} canonical={new URL(`/advisors/${advisor.slug}/`, Astro.site).toString()}>
+<Layout title={`${advisor.firm_name} — UK Exit Advisors`} description={advisor.short_description} canonical={profileUrl} image={ogImage}>
+  <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
   <section class="container-page py-16 sm:py-20">
     <div class="max-w-4xl">
       <p class="eyebrow">Advisor profile</p>
-      <h1 class="mt-3 text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">{advisor.name}</h1>
-      <p class="mt-4 text-lg leading-8 text-slate-600">{advisor.shortDescription}</p>
+      <h1 class="mt-3 text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">{advisor.firm_name}</h1>
+      <p class="mt-4 text-lg leading-8 text-slate-600">{advisor.short_description}</p>
+
+      <div class="mt-6 flex flex-wrap gap-2 text-sm text-slate-600">
+        {advisor.hq_city ? <span class="rounded-full border border-stone-200 bg-white px-3 py-1">HQ: {advisor.hq_city}</span> : null}
+        {advisor.regions_served?.length ? <span class="rounded-full border border-stone-200 bg-white px-3 py-1">Regions: {advisor.regions_served.join(', ')}</span> : null}
+      </div>
 
       <div class="mt-8 grid gap-4 lg:grid-cols-2">
         <div class="card p-6">
           <h2 class="text-lg font-semibold text-slate-900">Overview</h2>
-          <p class="mt-3 text-sm leading-7 text-slate-600">{advisor.longDescription}</p>
+          <p class="mt-3 text-sm leading-7 text-slate-600">{advisor.long_description || advisor.short_description}</p>
         </div>
         <div class="card p-6">
           <h2 class="text-lg font-semibold text-slate-900">Contact</h2>
           <dl class="mt-4 grid gap-3 text-sm text-slate-600">
-            <div><dt class="font-medium text-slate-900">Website</dt><dd><a href={advisor.website} class="break-all underline decoration-stone-300 underline-offset-4">{advisor.website}</a></dd></div>
-            <div><dt class="font-medium text-slate-900">Email</dt><dd><a href={`mailto:${advisor.email}`} class="underline decoration-stone-300 underline-offset-4">{advisor.email}</a></dd></div>
-            <div><dt class="font-medium text-slate-900">Phone</dt><dd>{advisor.phone}</dd></div>
-            <div><dt class="font-medium text-slate-900">Last verified</dt><dd>{advisor.lastVerified}</dd></div>
+            <div>
+              <dt class="font-medium text-slate-900">Website</dt>
+              <dd><a href={advisor.website} class="break-all underline decoration-stone-300 underline-offset-4">{advisor.website}</a></dd>
+            </div>
+            {advisor.contact_page_url ? (
+              <div>
+                <dt class="font-medium text-slate-900">Contact page</dt>
+                <dd><a href={advisor.contact_page_url} class="break-all underline decoration-stone-300 underline-offset-4">{advisor.contact_page_url}</a></dd>
+              </div>
+            ) : null}
+            {advisor.phone ? (
+              <div>
+                <dt class="font-medium text-slate-900">Phone</dt>
+                <dd>{advisor.phone}</dd>
+              </div>
+            ) : null}
+            {advisor.email ? (
+              <div>
+                <dt class="font-medium text-slate-900">Email</dt>
+                <dd><a href={`mailto:${advisor.email}`} class="underline decoration-stone-300 underline-offset-4">{advisor.email}</a></dd>
+              </div>
+            ) : null}
+            {advisor.linkedin ? (
+              <div>
+                <dt class="font-medium text-slate-900">LinkedIn</dt>
+                <dd><a href={advisor.linkedin} class="break-all underline decoration-stone-300 underline-offset-4">{advisor.linkedin}</a></dd>
+              </div>
+            ) : null}
           </dl>
-          <a href={`mailto:${advisor.email}?subject=Claim%20or%20correct%20profile%20for%20${encodeURIComponent(advisor.name)}`} class="mt-6 inline-flex rounded-full border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:border-slate-400">Claim / correct profile</a>
         </div>
       </div>
 
-      <div class="mt-6 card p-6">
-        <h2 class="text-lg font-semibold text-slate-900">Key people, coverage and work</h2>
-        <div class="mt-4 grid gap-6 md:grid-cols-3">
-          <div>
-            <p class="text-sm font-medium text-slate-900">Key people</p>
-            <ul class="mt-3 space-y-2 text-sm text-slate-600">
-              {advisor.keyPeople.map((person) => <li><span class="font-medium text-slate-900">{person.name}</span> · {person.title}</li>)}
-            </ul>
+      <div class="mt-6 grid gap-4 lg:grid-cols-2">
+        <div class="card p-6">
+          <h2 class="text-lg font-semibold text-slate-900">Adviser types and routes</h2>
+          <div class="mt-4 flex flex-wrap gap-2">
+            {tags.map((tag) => <span class="rounded-full bg-stone-100 px-3 py-1 text-xs text-slate-600">{tag}</span>)}
           </div>
-          <div>
-            <p class="text-sm font-medium text-slate-900">Coverage</p>
-            <p class="mt-3 text-sm text-slate-600">{advisor.exitRoutes.join(', ')}</p>
-            <p class="mt-4 text-sm text-slate-600">{advisor.services.join(', ')}</p>
-          </div>
-          <div>
-            <p class="text-sm font-medium text-slate-900">Notable work</p>
-            <ul class="mt-3 space-y-2 text-sm leading-6 text-slate-600">
-              {advisor.notableWork.map((item) => <li>{item}</li>)}
-            </ul>
-          </div>
+        </div>
+        <div class="card p-6">
+          <h2 class="text-lg font-semibold text-slate-900">Key people</h2>
+          <ul class="mt-4 space-y-2 text-sm leading-6 text-slate-600">
+            {(advisor.key_people || []).map((person) => <li><span class="font-medium text-slate-900">{person.name}</span>{person.title ? ` · ${person.title}` : ''}</li>)}
+          </ul>
+        </div>
+      </div>
+
+      <div class="mt-6 grid gap-4 lg:grid-cols-2">
+        <div class="card p-6">
+          <h2 class="text-lg font-semibold text-slate-900">Notable work</h2>
+          <ul class="mt-4 space-y-2 text-sm leading-6 text-slate-600">
+            {(advisor.notable_work || []).map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+        <div class="card p-6">
+          <h2 class="text-lg font-semibold text-slate-900">Sources</h2>
+          <ol class="mt-4 space-y-2 text-sm leading-6 text-slate-600">
+            {sources.map((source, index) => (
+              <li>
+                <a href={source} class="break-all underline decoration-stone-300 underline-offset-4">[{index + 1}] {source}</a>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </div>
+
+      <div class="mt-8 card grid gap-6 p-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
+        <div>
+          <p class="eyebrow">Claim listing</p>
+          <h2 class="mt-2 text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">Claim or correct this listing</h2>
+          <p class="mt-3 text-sm leading-7 text-slate-600">If you represent this firm, use the contact page to request a correction or claim the profile.</p>
+        </div>
+        <div class="flex flex-col gap-3">
+          <a href="/contact/" class="button-primary text-center">Claim or correct this listing</a>
         </div>
       </div>
     </div>

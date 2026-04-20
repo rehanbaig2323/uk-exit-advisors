@@ -5,9 +5,10 @@ const {
   title,
   description,
   canonical,
+  image,
 } = Astro.props;
 
-const pageTitle = title ? `${title} | ${site.name}` : site.name;
+const pageTitle = title ? (title.includes(site.name) ? title : `${title} | ${site.name}`) : site.name;
 const pageDescription = description ?? site.description;
 ---
 
@@ -18,4 +19,6 @@ const pageDescription = description ?? site.description;
 <meta property="og:title" content={pageTitle} />
 <meta property="og:description" content={pageDescription} />
 <meta property="og:type" content="website" />
+{image ? <meta property="og:image" content={image} /> : null}
 <meta name="twitter:card" content="summary_large_image" />
+{image ? <meta name="twitter:image" content={image} /> : null}

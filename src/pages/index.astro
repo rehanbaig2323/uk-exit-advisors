@@ -9,6 +9,8 @@ import { advisorsData } from '@/data/advisors';
 import { routes } from '@/data/routes';
 import { services } from '@/data/services';
 
+const pageTitle = 'UK business exit advisors';
+const pageDescription = 'Independent directory of UK business exit advisors for trade sales, EOTs, MBOs, succession and partial exits.';
 const firmCount = advisorsData.length;
 const currentMonth = new Date();
 currentMonth.setDate(1);
@@ -39,9 +41,18 @@ const recentDeals = [
   { client: 'TTP Group', description: '£276 million transition to an Employee Ownership Trust', firmSlug: 'rve-corporate-finance', firmName: 'RVE Corporate Finance' },
   { client: 'Synergy Vision', description: 'Transition to Employee Ownership Trust', firmSlug: 'postlethwaite-solicitors', firmName: 'Postlethwaite Solicitors' },
 ];
+
+const organizationJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'UK Exit Advisors',
+  url: new URL('/', Astro.site).toString(),
+  description: pageDescription,
+};
 ---
 
-<Layout title={site.headline} description={site.subheadline}>
+<Layout title={pageTitle} description={pageDescription}>
+  <script type="application/ld+json" set:html={JSON.stringify(organizationJsonLd)} />
   <section class="border-b border-line bg-white/75">
     <div class="container-page py-20 sm:py-24">
       <div class="grid gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">

@@ -13,6 +13,9 @@ type RawAdvisor = {
   regions_served?: string[];
   key_people?: Array<{ name: string; title?: string }>;
   notable_work?: string[];
+  evidence_url_1?: string;
+  evidence_url_2?: string;
+  evidence_url_3?: string;
   long_description?: string;
   email?: string;
   phone?: string;
@@ -27,6 +30,10 @@ type RawAdvisor = {
   listing_status?: string;
   featured?: boolean;
 };
+
+export type AdvisorRecord = RawAdvisor;
+
+export const advisorRecords = rawAdvisors as RawAdvisor[];
 
 function toAdvisor(raw: RawAdvisor, index: number): Advisor {
   return {
@@ -52,6 +59,10 @@ function toAdvisor(raw: RawAdvisor, index: number): Advisor {
 }
 
 export const advisorsData = (rawAdvisors as RawAdvisor[]).map(toAdvisor);
+
+export function getAdvisorRecordBySlug(slug: string) {
+  return advisorRecords.find((advisor) => advisor.slug === slug);
+}
 
 export const advisorFilters = {
   services: [...new Set(advisorsData.flatMap((advisor) => advisor.services))].sort(),
