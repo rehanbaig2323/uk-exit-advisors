@@ -27,6 +27,33 @@ const advisors = advisorsData.filter((advisor) => {
   return advisor.exitRoutes.some((exitRoute) =>
     keywords.some((keyword) => exitRoute.toLowerCase().includes(keyword)),
   );
+}).sort((a, b) => {
+  const routeKeywordsList = routeKeywords[route.slug] || [route.name.toLowerCase()];
+
+  const score = (advisor: (typeof advisorsData)[number]) => {
+    const text = `${advisor.longDescription} ${advisor.services.join(' ')} ${advisor.exitRoutes.join(' ')}`.toLowerCase();
+    let total = 0;
+
+    if (route.slug === 'eot' && advisor.advisorTypes.includes('EOT specialist')) {
+      total += 100;
+    }
+
+    if (advisor.advisorTypes.some((type) => type.toLowerCase().includes(route.name.toLowerCase()))) {
+      total += 30;
+    }
+
+    if (routeKeywordsList.some((keyword) => text.includes(keyword))) {
+      total += 20;
+    }
+
+    if (/specialis(t|e|ing|ed)/i.test(text) && routeKeywordsList.some((keyword) => text.includes(keyword))) {
+      total += 50;
+    }
+
+    return total;
+  };
+
+  return score(b) - score(a);
 });
 ---
 
@@ -38,6 +65,7 @@ const advisors = advisorsData.filter((advisor) => {
       <p class="mt-4 text-lg leading-8 text-slate-600">{route.description}</p>
       <a href="/advisors/" class="mt-8 inline-flex rounded-full bg-slate-900 px-5 py-3 text-sm font-medium text-white hover:bg-slate-800">See all advisors →</a>
 
+      <h2 class="mt-12 text-xl font-semibold tracking-tight text-slate-900">Firms that specialise in {route.name}</h2>
       <div class="mt-10 grid gap-5 lg:grid-cols-2 xl:grid-cols-3">
         {advisors.map((advisor) => <AdvisorCard advisor={advisor} />)}
       </div>
