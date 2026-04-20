@@ -2,109 +2,80 @@
 import Layout from '@/components/Layout.astro';
 import SectionHeading from '@/components/SectionHeading.astro';
 
+const tiers = [
+  {
+    name: 'Free Listing',
+    price: '£0',
+    features: ['Firm name, HQ city, website', 'Adviser type and exit routes served', 'One contact link', 'Standard ranking in search results'],
+  },
+  {
+    name: 'Enhanced Listing',
+    price: '£X/mo',
+    features: ['Everything in Free', 'Firm description (up to 120 words)', 'Up to 3 named key people', 'Up to 5 notable deals', 'Priority ranking within sector and region', 'Monthly enquiry analytics'],
+  },
+  {
+    name: 'Featured Advisor',
+    price: '£Y/mo',
+    features: ['Everything in Enhanced', 'Homepage Featured advisors placement', 'Sponsored position on matching route pages', 'Monthly newsletter feature', 'Quarterly deal-announcement feature'],
+  },
+];
+
 const faqs = [
   {
-    question: 'Who can be listed?',
-    answer: 'Firms helping UK owners exit their business.',
+    question: 'How do you verify firms?',
+    answer: 'We check public websites, case studies and listing claims before publishing or updating a profile.',
   },
   {
-    question: 'Is the site neutral?',
-    answer: 'Yes. Listings stay neutral. Paid options add detail, not bias.',
+    question: 'Do paid listings rank higher in search results?',
+    answer: 'No. Paid tiers only affect clearly labelled featured or sponsored placements. Main search results stay neutral.',
   },
   {
-    question: 'How do I claim my profile?',
-    answer: 'Use the claim CTA or email us. We’ll verify and update it.',
+    question: 'Do you take a commission on deals?',
+    answer: 'No. The site does not take deal commission.',
   },
   {
-    question: 'What does Enhanced Profile include?',
-    answer: 'Richer copy, more fields and stronger visibility.',
+    question: 'How do I claim an existing listing?',
+    answer: 'Use the contact link on the profile or email us and we will verify the request before updating the listing.',
   },
   {
-    question: 'Can I request corrections?',
-    answer: 'Yes. Send the correction and we’ll review it.',
+    question: 'Can I remove my firm from the directory?',
+    answer: 'Yes. Send a removal request and we will review it.',
   },
 ];
 ---
 
-<Layout title="For Advisors" description="Claim a free profile or upgrade to an Enhanced Profile on UK Exit Advisors.">
-  <section class="border-b border-stone-200 bg-white">
+<Layout title="For Advisors — UK Exit Advisors" description="Free and paid listing options for UK exit advisory firms.">
+  <section class="border-b border-line bg-white/80">
     <div class="container-page py-20 sm:py-24">
       <div class="max-w-3xl">
         <p class="eyebrow">For advisors</p>
-        <h1 class="mt-4 text-4xl font-semibold tracking-tight text-slate-950 sm:text-6xl">Get found by UK business owners planning an exit</h1>
-        <p class="mt-6 max-w-2xl text-lg leading-8 text-slate-600">Claim a free profile. Upgrade for more visibility and detail.</p>
+        <h1 class="mt-4 text-4xl font-semibold tracking-tight text-slate-950 sm:text-6xl">Get in front of owners actively planning an exit.</h1>
+        <p class="mt-6 max-w-2xl text-lg leading-8 text-slate-600">UK Exit Advisors is an independent directory focused exclusively on business-exit advisory. Our visitors are not idly browsing - they are owners within 6-24 months of a liquidity event, and the advisors they work with.</p>
         <div class="mt-8 flex flex-wrap gap-3">
-          <a href="mailto:hello@ukexitadvisors.co.uk" class="button-primary">Email us</a>
-          <a href="/contact/" class="button-secondary">Claim profile</a>
-          <a href="/advisors/" class="button-secondary">Browse directory</a>
+          <a href="/contact/" class="button-primary">Claim or upgrade</a>
+          <a href="/about/" class="button-secondary">Read editorial policy</a>
         </div>
       </div>
     </div>
   </section>
 
   <section class="container-page py-16 sm:py-20">
-    <SectionHeading eyebrow="Why firms are listed" title="Why firms appear here" copy="Free basic profiles help owners compare real firms. Firms can claim or correct listings anytime." />
-    <div class="mt-10 grid gap-4 md:grid-cols-2">
-      <div class="card p-6">
-        <p class="font-medium text-slate-900">Selected firms</p>
-        <p class="mt-2 text-sm leading-6 text-slate-600">Free basic profiles.</p>
-      </div>
-      <div class="card p-6">
-        <p class="font-medium text-slate-900">Claim or correct</p>
-        <p class="mt-2 text-sm leading-6 text-slate-600">Request edits or an upgrade.</p>
-      </div>
-    </div>
-  </section>
-
-  <section class="container-page py-8">
-    <SectionHeading eyebrow="Pricing" title="Simple monthly options" copy="Free basic listing, or a richer enhanced profile." />
-    <div class="mt-8 grid gap-5 lg:grid-cols-2">
-      <div class="card flex flex-col p-8">
-        <p class="eyebrow">Free Profile</p>
-        <h2 class="mt-3 text-2xl font-semibold tracking-tight text-slate-900">Basic directory listing</h2>
-        <p class="mt-3 text-sm leading-7 text-slate-600">Clean, neutral entry.</p>
-        <ul class="mt-6 space-y-3 text-sm text-slate-600">
-          <li>Firm name</li>
-          <li>Website</li>
-          <li>Summary</li>
-          <li>Category tags</li>
-          <li>Claim / correct</li>
-        </ul>
-        <div class="mt-auto pt-8">
-          <a href="mailto:hello@ukexitadvisors.co.uk" class="button-secondary inline-flex">Claim or correct</a>
-        </div>
-      </div>
-
-      <div class="card flex flex-col border-slate-300 p-8">
-        <div class="flex items-start justify-between gap-4">
-          <div>
-            <p class="eyebrow">Enhanced Profile</p>
-            <h2 class="mt-3 text-2xl font-semibold tracking-tight text-slate-900">Richer firm profile</h2>
+    <SectionHeading eyebrow="Pricing" title="Simple listing options" copy="Free by default, with optional paid upgrades for more detail and labelled placements." />
+    <div class="mt-10 grid gap-5 lg:grid-cols-3">
+      {tiers.map((tier) => (
+        <div class="card flex flex-col p-8">
+          <div class="flex items-start justify-between gap-4">
+            <div>
+              <p class="eyebrow">{tier.name.toUpperCase()}</p>
+              <h2 class="mt-3 text-2xl font-semibold tracking-tight text-slate-900">{tier.name}</h2>
+            </div>
+            <p class="rounded-full bg-mist px-3 py-1 text-sm font-medium text-cedar">{tier.price}</p>
           </div>
-          <p class="rounded-full bg-mist px-3 py-1 text-sm font-medium text-cedar">£149/month</p>
+          <ul class="mt-6 space-y-3 text-sm leading-6 text-slate-600">
+            {tier.features.map((feature) => <li>{feature}</li>)}
+          </ul>
         </div>
-        <p class="mt-3 text-sm leading-7 text-slate-600">For firms that want more detail and visibility.</p>
-        <ul class="mt-6 space-y-3 text-sm text-slate-600">
-          <li>Richer description</li>
-          <li>Services and routes</li>
-          <li>Key people and work</li>
-          <li>Better visibility</li>
-          <li>Direct enquiry CTA</li>
-        </ul>
-        <p class="mt-6 rounded-2xl border border-line bg-mist/80 p-4 text-xs leading-6 text-calm">A founding rate may apply for early firms joining the directory.</p>
-        <div class="mt-auto pt-8">
-          <a href="mailto:hello@ukexitadvisors.co.uk" class="inline-flex rounded-full bg-slate-900 px-5 py-3 text-sm font-medium text-white hover:bg-slate-800">Discuss enhanced profile</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="container-page py-16">
-    <SectionHeading eyebrow="Benefits" title="Practical benefits" />
-    <div class="mt-8 grid gap-4 md:grid-cols-3">
-      <div class="card p-6"><p class="font-medium text-slate-900">Relevant owners</p><p class="mt-2 text-sm text-slate-600">Seen by active searchers.</p></div>
-      <div class="card p-6"><p class="font-medium text-slate-900">Credibility</p><p class="mt-2 text-sm text-slate-600">Looks considered, not salesy.</p></div>
-      <div class="card p-6"><p class="font-medium text-slate-900">Comparison</p><p class="mt-2 text-sm text-slate-600">Easy to benchmark.</p></div>
+      ))}
     </div>
   </section>
 
@@ -124,13 +95,12 @@ const faqs = [
     <div class="card grid gap-6 p-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
       <div>
         <p class="eyebrow">Next step</p>
-        <h2 class="mt-2 text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">Speak to us about your profile</h2>
-        <p class="mt-3 text-base leading-7 text-slate-600">Email us to list, claim or upgrade.</p>
+        <h2 class="mt-2 text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">Claim a profile or ask about upgrades</h2>
+        <p class="mt-3 text-base leading-7 text-slate-600">Use the contact page to claim, correct or discuss a paid upgrade.</p>
       </div>
       <div class="flex flex-col gap-3">
-        <a href="mailto:hello@ukexitadvisors.co.uk" class="button-primary text-center">Email CTA</a>
-        <a href="/contact/" class="button-secondary text-center">Claim profile</a>
-        <a href="/contact/" class="button-secondary text-center">Contact</a>
+        <a href="/contact/" class="button-primary text-center">Contact</a>
+        <a href="/about/" class="button-secondary text-center">Editorial policy</a>
       </div>
     </div>
   </section>
