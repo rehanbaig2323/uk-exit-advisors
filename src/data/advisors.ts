@@ -28,6 +28,7 @@ type RawAdvisor = {
   source_type?: string;
   source_found?: string;
   listing_status?: string;
+  last_verified?: string;
   featured?: boolean;
 };
 
@@ -52,13 +53,25 @@ function toAdvisor(raw: RawAdvisor, index: number): Advisor {
     website: raw.website,
     email: raw.email || '',
     phone: raw.phone || '',
-    lastVerified: raw.source_found || raw.listing_status || '',
+    lastVerified: raw.last_verified || 'April 2026', // TODO: make this come from a real last_verified field in the source data.
     advisorTypes: raw.adviser_types || [],
     featured: raw.featured ?? index < 3,
   };
 }
 
-export const advisorsData = (rawAdvisors as RawAdvisor[]).map(toAdvisor);
+export function normalizeNotableWorkItem(value: string): string {
+  let item = String(value || '').trim();
+  item = item.replace(/^[\s,;:.]+/, '').replace(/[\s,;:.]+$/g, '');
+  item = item.replace(/^(and|plus)\s+/i, '');
+  if (!item) return '';
+  item = item.charAt(0).toUpperCase() + item.slice(1);
+  return item.replace(/[.,;]+$/g, '');
+}
+
+export const advisorsData = (rawAdvisors as RawAdvisor[]).map((advisor, index) => ({
+  ...toAdvisor(advisor, index),
+  notableWork: (advisor.notable_work || []).map(normalizeNotableWorkItem).filter(Boolean),
+}));
 
 export function getAdvisorRecordBySlug(slug: string) {
   return advisorRecords.find((advisor) => advisor.slug === slug);

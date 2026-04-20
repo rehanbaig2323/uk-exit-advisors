@@ -1,6 +1,6 @@
 ---
 import Layout from '@/components/Layout.astro';
-import { advisorRecords } from '@/data/advisors';
+import { advisorRecords, normalizeNotableWorkItem } from '@/data/advisors';
 
 export function getStaticPaths() {
   return advisorRecords.map((advisor) => ({ params: { slug: advisor.slug }, props: { advisor } }));
@@ -15,6 +15,11 @@ const tags = [
 ];
 
 const sources = [advisor.evidence_url_1, advisor.evidence_url_2, advisor.evidence_url_3].filter(Boolean);
+const sourceEntries = sources.map((source) => ({
+  url: source,
+  label: new URL(source).hostname.replace(/^www\./, ''),
+}));
+const notableWork = (advisor.notable_work || []).map(normalizeNotableWorkItem).filter(Boolean);
 
 const profileUrl = new URL(`/advisors/${advisor.slug}/`, Astro.site).toString();
 const ogImage = new URL(`/advisors/${advisor.slug}/og.svg/`, Astro.site).toString();
@@ -45,6 +50,7 @@ const claimUrl = `mailto:info@ukexitadvisors.co.uk?subject=Claim%20or%20correct%
       <div class="mt-6 flex flex-wrap gap-2 text-sm text-slate-600">
         {advisor.hq_city ? <span class="rounded-full border border-stone-200 bg-white px-3 py-1">HQ: {advisor.hq_city}</span> : null}
         {advisor.regions_served?.length ? <span class="rounded-full border border-stone-200 bg-white px-3 py-1">Regions: {advisor.regions_served.join(', ')}</span> : null}
+        <span class="rounded-full border border-stone-200 bg-white px-3 py-1">Independently verified · {advisor.lastVerified}</span>
       </div>
 
       <div class="mt-8 grid gap-4 lg:grid-cols-2">
@@ -106,19 +112,21 @@ const claimUrl = `mailto:info@ukexitadvisors.co.uk?subject=Claim%20or%20correct%
         <div class="card p-6">
           <h2 class="text-lg font-semibold text-slate-900">Notable work</h2>
           <ul class="mt-4 space-y-2 text-sm leading-6 text-slate-600">
-            {(advisor.notable_work || []).map((item) => <li>{item}</li>)}
+            {notableWork.map((item) => <li>{item}</li>)}
           </ul>
         </div>
-        <div class="card p-6">
-          <h2 class="text-lg font-semibold text-slate-900">Sources</h2>
-          <ol class="mt-4 space-y-2 text-sm leading-6 text-slate-600">
-            {sources.map((source, index) => (
-              <li>
-                <a href={source} class="break-all underline decoration-stone-300 underline-offset-4">[{index + 1}] {source}</a>
-              </li>
-            ))}
-          </ol>
-        </div>
+        {sourceEntries.length ? (
+          <div class="card p-6">
+            <h2 class="text-lg font-semibold text-slate-900">Sources</h2>
+            <ol class="mt-4 space-y-2 text-sm leading-6 text-slate-600">
+              {sourceEntries.map((source, index) => (
+                <li>
+                  <a href={source.url} class="break-all underline decoration-stone-300 underline-offset-4">{index + 1}. {source.label}</a> — {source.url}
+                </li>
+              ))}
+            </ol>
+          </div>
+        ) : null}
       </div>
 
       <div class="mt-8 card grid gap-6 p-6 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
