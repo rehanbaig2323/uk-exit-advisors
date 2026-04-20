@@ -14,7 +14,12 @@ const { advisor } = Astro.props;
 
   <p class="mt-4 text-sm leading-6 text-calm">{advisor.shortDescription}</p>
 
-  <div class="mt-5 flex flex-wrap gap-2">
-    {[...advisor.advisorTypes, ...advisor.exitRoutes].map((chip) => <span class="rounded-full border border-stone-200 bg-white px-3 py-1 text-xs text-calm">{chip}</span>)}
+  <div class="mt-5 space-y-3">
+    <div class="flex flex-wrap gap-2">
+      {advisor.advisorTypes.map((chip) => <span class="rounded-full border border-stone-200 bg-white px-3 py-1 text-xs text-calm">{chip}</span>)}
+    </div>
+    <div class="flex flex-wrap gap-2">
+      {advisor.exitRoutes.map((chip) => <span class="rounded-full border border-stone-200 bg-white px-3 py-1 text-xs text-calm">{chip}</span>)}
+    </div>
   </div>
 </article>
