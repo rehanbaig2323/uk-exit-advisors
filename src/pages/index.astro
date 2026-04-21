@@ -70,7 +70,7 @@ const organizationJsonLd = {
           <p class="mt-6 max-w-2xl text-lg leading-8 text-slate-600">For owners planning a trade sale, EOT, MBO, succession or partial exit - compare specialist UK firms by sector, deal size and location. No lead forms. No commission. No paywall for owners.</p>
           <div class="mt-8 flex flex-wrap gap-3">
             <a href="/advisors/" class="button-primary">Browse advisors</a>
-            <a href="/route-finder/" class="button-secondary">Which exit route fits me?</a>
+            <a href="/routes/" class="button-secondary">Browse exit routes</a>
           </div>
         </div>
 
@@ -101,7 +101,7 @@ const organizationJsonLd = {
   </section>
 
   <section class="container-page py-12 sm:py-16">
-    <SectionHeading eyebrow="Directory highlights" title="A tighter selection across routes, sectors and locations." copy="Currently an editorial selection. Paid featured placements launching soon." />
+    <SectionHeading eyebrow="Directory highlights" title="A tighter selection across routes, sectors and locations." copy="Currently an editorial selection. Paid placements, where available, are clearly labelled." />
     <div class="mt-8 grid gap-5 lg:grid-cols-2 xl:grid-cols-3">
       {featuredAdvisors.map((advisor) => advisor ? <FeaturedAdvisorCard advisor={advisor} /> : null)}
     </div>
