@@ -1,5 +1,6 @@
 ---
 import Layout from '@/components/Layout.astro';
+import AdvisorLogo from '@/components/AdvisorLogo.astro';
 import { advisorRecords, normalizeNotableWorkItem } from '@/data/advisors';
 
 export function getStaticPaths() {
@@ -57,8 +58,13 @@ const claimUrl = `mailto:info@ukexitadvisors.co.uk?subject=Claim%20or%20correct%
   <section class="container-page py-16 sm:py-20">
     <div class="max-w-4xl">
       <p class="eyebrow">Advisor profile</p>
-      <h1 class="mt-3 text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">{advisor.firm_name}</h1>
-      <p class="mt-4 text-lg leading-8 text-slate-600">{advisor.short_description}</p>
+      <div class="mt-4 flex items-start gap-5 sm:gap-6">
+        <AdvisorLogo advisor={advisor} size="lg" />
+        <div class="min-w-0 flex-1">
+          <h1 class="text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">{advisor.firm_name}</h1>
+          <p class="mt-4 text-lg leading-8 text-slate-600">{advisor.short_description}</p>
+        </div>
+      </div>
 
       <div class="mt-6 flex flex-wrap gap-2 text-sm text-slate-600">
         {advisor.hq_city ? <span class="rounded-full border border-stone-200 bg-white px-3 py-1">HQ: {advisor.hq_city}</span> : null}

@@ -7,6 +7,7 @@ import { advisorSchema, type Advisor } from '@/lib/schema';
 // - firm name: `name`
 // - slug: `slug`
 // - website: `website`
+// - logo: `logo` or `logoUrl` (optional)
 // - city: `location`
 // - adviser types: `advisorTypes`
 // - exit routes: `exitRoutes`

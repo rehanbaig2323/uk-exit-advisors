@@ -189,6 +189,13 @@ function normalizeRow(headerMap, row, index, usedSlugs) {
     featured: toBoolean(get('featured')),
   };
 
+  const logo = get('logo');
+  const logoUrl = get('logo_url');
+  if (logo || logoUrl) {
+    record.logo = logo || logoUrl;
+    record.logoUrl = logoUrl || logo;
+  }
+
   const hasRequired = ['slug', 'firm_name', 'website', 'short_description'].every((field) => record[field]);
   if (!hasRequired) {
     usedSlugs.delete(uniqueSlug);

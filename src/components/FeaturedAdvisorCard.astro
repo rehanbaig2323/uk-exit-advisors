@@ -1,10 +1,13 @@
 ---
+import AdvisorLogo from '@/components/AdvisorLogo.astro';
+
 const { advisor } = Astro.props;
 ---
 
 <article class="flex h-full flex-col overflow-hidden rounded-3xl border border-line bg-gradient-to-br from-stone-50 via-white to-stone-100 p-6 shadow-md shadow-stone-200/60 transition-transform duration-200 hover:-translate-y-0.5 hover:shadow-lg">
-  <div class="flex items-start justify-between gap-4">
-    <div>
+  <div class="flex items-start gap-4">
+    <AdvisorLogo advisor={advisor} size="sm" />
+    <div class="min-w-0 flex-1">
       <p class="text-xs uppercase tracking-[0.16em] text-brass">Featured advisor</p>
       <h3 class="mt-2 text-xl font-semibold tracking-tight text-ink">{advisor.name}</h3>
       <p class="mt-1 text-sm text-calm">{advisor.location}</p>

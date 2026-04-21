@@ -1,0 +1,54 @@
+---
+import {
+  getAdvisorDisplayName,
+  getAdvisorFaviconUrl,
+  getAdvisorInitials,
+  getAdvisorLogoUrl,
+} from '@/lib/advisor-logo';
+
+const { advisor, size = 'md', class: className = '' } = Astro.props;
+const name = getAdvisorDisplayName(advisor);
+const explicitLogo = getAdvisorLogoUrl(advisor);
+const faviconUrl = getAdvisorFaviconUrl(advisor);
+const primarySrc = explicitLogo || faviconUrl;
+const fallbackSrc = explicitLogo ? faviconUrl : '';
+const initials = getAdvisorInitials(advisor);
+const resolvedSize = ['sm', 'md', 'lg'].includes(size) ? size : 'md';
+
+const sizeClasses = {
+  sm: 'h-14 w-14 rounded-2xl',
+  md: 'h-16 w-16 rounded-3xl',
+  lg: 'h-20 w-20 rounded-[1.35rem]',
+};
+
+const paddingClasses = {
+  sm: 'p-2',
+  md: 'p-2.5',
+  lg: 'p-3',
+};
+
+const textClasses = {
+  sm: 'text-[0.72rem] tracking-[0.2em]',
+  md: 'text-[0.8rem] tracking-[0.2em]',
+  lg: 'text-[0.9rem] tracking-[0.22em]',
+};
+---
+
+<div class={`relative flex shrink-0 items-center justify-center overflow-hidden border border-stone-200 bg-white/90 shadow-sm ${sizeClasses[resolvedSize]} ${className}`}>
+  {primarySrc ? (
+    <img
+      src={primarySrc}
+      alt={`${name} logo`}
+      class={`h-full w-full object-contain ${paddingClasses[resolvedSize]}`}
+      loading="lazy"
+      decoding="async"
+      referrerpolicy="no-referrer"
+      data-logo-state="primary"
+      data-fallback-src={fallbackSrc}
+      onerror={`const img = this; if (img.dataset.logoState === 'fallback' || !img.dataset.fallbackSrc) { img.style.display = 'none'; const fallback = img.nextElementSibling; if (fallback) fallback.hidden = false; return; } img.dataset.logoState = 'fallback'; img.src = img.dataset.fallbackSrc;`}
+    />
+  ) : null}
+  <span hidden={!primarySrc} class={`flex h-full w-full items-center justify-center rounded-[inherit] bg-slate-950 font-semibold text-white ${textClasses[resolvedSize]}`}>
+    {initials}
+  </span>
+</div>

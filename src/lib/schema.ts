@@ -5,10 +5,14 @@ export const keyPersonSchema = z.object({
   title: z.string(),
 });
 
+const optionalUrlSchema = z.union([z.string().url(), z.literal('')]).optional();
+
 export const advisorSchema = z.object({
   slug: z.string(),
   name: z.string(),
   location: z.string(),
+  logo: optionalUrlSchema,
+  logoUrl: optionalUrlSchema,
   services: z.array(z.string()),
   exitRoutes: z.array(z.string()),
   shortDescription: z.string(),

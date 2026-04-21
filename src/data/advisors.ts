@@ -5,6 +5,8 @@ type RawAdvisor = {
   slug: string;
   firm_name: string;
   website: string;
+  logo?: string;
+  logoUrl?: string;
   short_description: string;
   hq_city?: string;
   adviser_types?: string[];
@@ -40,6 +42,8 @@ function toAdvisor(raw: RawAdvisor, index: number): Advisor {
   return {
     slug: raw.slug,
     name: raw.firm_name,
+    logo: raw.logo || raw.logoUrl || undefined,
+    logoUrl: raw.logoUrl || raw.logo || undefined,
     location: raw.hq_city || '',
     services: raw.adviser_types || [],
     exitRoutes: raw.exit_routes || [],
