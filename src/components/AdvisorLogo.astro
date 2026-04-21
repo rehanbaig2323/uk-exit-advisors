@@ -1,16 +1,13 @@
 ---
 import {
   getAdvisorDisplayName,
-  getAdvisorFaviconUrl,
   getAdvisorLogoUrl,
 } from '@/lib/advisor-logo';
 
 const { advisor, size = 'md', class: className = '' } = Astro.props;
 const name = getAdvisorDisplayName(advisor);
 const explicitLogo = getAdvisorLogoUrl(advisor);
-const faviconUrl = getAdvisorFaviconUrl(advisor);
-const primarySrc = explicitLogo || faviconUrl;
-const fallbackSrc = explicitLogo ? faviconUrl : '';
+const primarySrc = explicitLogo;
 const resolvedSize = ['sm', 'md', 'lg'].includes(size) ? size : 'md';
 
 const sizeClasses = {
@@ -24,23 +21,16 @@ const paddingClasses = {
   md: 'p-2.5',
   lg: 'p-3',
 };
-
-const fallbackBadgeClasses = {
-  sm: 'h-8 w-8',
-  md: 'h-9 w-9',
-  lg: 'h-10 w-10',
+const fallbackClasses = {
+  sm: 'p-0.5',
+  md: 'p-0.5',
+  lg: 'p-1',
 };
 
-const fallbackMarkup = `
-  <div class="flex items-center justify-center rounded-[inherit] bg-gradient-to-br from-stone-100 via-stone-50 to-stone-200 ${sizeClasses[resolvedSize]}" aria-hidden="true">
-    <div class="flex items-center justify-center rounded-full border border-stone-300 bg-white shadow-sm ${fallbackBadgeClasses[resolvedSize]}">
-      <div class="h-3.5 w-3.5 rounded-full border border-stone-400/80"></div>
-    </div>
-  </div>
-`;
+const fallbackMarkup = `<div class="h-full w-full rounded-[inherit] bg-[linear-gradient(135deg,rgba(243,237,229,0.96),rgba(233,224,211,0.92))] border border-stone-200" aria-hidden="true"></div>`;
 ---
 
-<div class={`relative flex shrink-0 items-center justify-center overflow-hidden border border-stone-200 bg-white/90 shadow-sm ${sizeClasses[resolvedSize]} ${className}`}>
+<div class={`relative flex shrink-0 items-center justify-center overflow-hidden border border-stone-200 bg-paper/90 shadow-sm ${sizeClasses[resolvedSize]} ${className}`}>
   {primarySrc ? (
     <img
       src={primarySrc}
@@ -48,16 +38,10 @@ const fallbackMarkup = `
       class={`h-full w-full object-contain ${paddingClasses[resolvedSize]}`}
       loading="lazy"
       decoding="async"
-      referrerpolicy="no-referrer"
       data-logo-state="primary"
-      data-fallback-src={fallbackSrc}
-      onerror={`const img = this; const wrap = img.parentElement; if (!wrap) return; if (img.dataset.logoState === 'fallback' || !img.dataset.fallbackSrc) { wrap.innerHTML = ${JSON.stringify(fallbackMarkup)}; return; } img.dataset.logoState = 'fallback'; img.src = img.dataset.fallbackSrc;`}
+      onerror={`const img = this; const wrap = img.parentElement; if (!wrap) return; if (img.dataset.logoState === 'fallback') { wrap.innerHTML = ${JSON.stringify(fallbackMarkup)}; return; } img.dataset.logoState = 'fallback'; wrap.innerHTML = ${JSON.stringify(fallbackMarkup)};`}
     />
   ) : (
-    <div class={`flex items-center justify-center rounded-[inherit] bg-gradient-to-br from-stone-100 via-stone-50 to-stone-200 ${sizeClasses[resolvedSize]}`} aria-hidden="true">
-      <div class={`flex items-center justify-center rounded-full border border-stone-300 bg-white shadow-sm ${fallbackBadgeClasses[resolvedSize]}`}>
-        <div class="h-3.5 w-3.5 rounded-full border border-stone-400/80" />
-      </div>
-    </div>
+    <div class={`h-full w-full rounded-[inherit] border border-stone-200 bg-[linear-gradient(135deg,rgba(243,237,229,0.96),rgba(233,224,211,0.92))] ${fallbackClasses[resolvedSize]}`} aria-hidden="true" />
   )}
 </div>

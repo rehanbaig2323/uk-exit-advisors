@@ -3,15 +3,15 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        ink: '#121826',
-        cedar: '#21352e',
-        brass: '#8b6b3e',
-        paper: '#f7f2ea',
-        linen: '#e4dbcf',
-        mist: '#f1ece3',
-        calm: '#68707d',
-        line: '#d8cfbf',
-        accent: '#2f4a41',
+        ink: '#101a24',
+        cedar: '#24382f',
+        brass: '#7a4a33',
+        paper: '#f4efe7',
+        linen: '#ddd1c2',
+        mist: '#efe7db',
+        calm: '#5f6672',
+        line: '#d9cbbb',
+        accent: '#5b302c',
       },
       boxShadow: {
         soft: '0 10px 30px rgba(18, 24, 38, 0.06)',

@@ -1,7 +1,6 @@
 ---
 import Layout from '@/components/Layout.astro';
 import SectionHeading from '@/components/SectionHeading.astro';
-import RouteCard from '@/components/RouteCard.astro';
 import ServiceCard from '@/components/ServiceCard.astro';
 import FeaturedAdvisorCard from '@/components/FeaturedAdvisorCard.astro';
 import { site } from '@/lib/site';
@@ -10,7 +9,7 @@ import { routes } from '@/data/routes';
 import { services } from '@/data/services';
 
 const pageTitle = 'UK Exit Advisors — the independent directory of UK business-exit firms';
-const pageDescription = 'Compare 15 specialist UK exit advisors by sector, deal size and location. Covering trade sale, EOT, MBO, succession and partial exit. Independent, no lead forms, no commission.';
+const pageDescription = 'Compare 15 specialist UK exit advisors across trade sale, EOT, MBO, succession and partial exit. Curated for owners who want a serious first comparison.';
 const firmCount = advisorsData.length;
 const buildDate = new Date();
 const reviewMonth = new Date(buildDate.getFullYear(), buildDate.getMonth(), 1);
@@ -36,6 +35,14 @@ const featuredAdvisorSlugs = [
 const featuredAdvisors = featuredAdvisorSlugs
   .map((slug) => advisorsData.find((advisor) => advisor.slug === slug))
   .filter((advisor): advisor is (typeof advisorsData)[number] => Boolean(advisor));
+
+const routeNotes: Record<string, string> = {
+  'trade-sale': 'Best when price and a broad buyer pool matter most.',
+  eot: 'Best when the owner wants continuity, culture and employee ownership.',
+  mbo: 'Best when the management team can buy and run the business.',
+  succession: 'Best when the handover will happen in stages.',
+  'partial-exit': 'Best when you want liquidity without giving up every share.',
+};
 
 const recentDeals = [
   { client: 'Equal Experts', description: 'Transition to Employee Ownership', firmSlug: 'moore-kingston-smith', firmName: 'Moore Kingston Smith' },
@@ -67,10 +74,15 @@ const organizationJsonLd = {
         <div class="max-w-3xl">
           <span class="hero-kicker">{site.domain}</span>
           <h1 class="mt-5 text-4xl font-semibold tracking-tight text-slate-950 sm:text-6xl">The independent directory of UK business-exit advisors.</h1>
-          <p class="mt-6 max-w-2xl text-lg leading-8 text-slate-600">For owners planning a trade sale, EOT, MBO, succession or partial exit - compare specialist UK firms by sector, deal size and location. No lead forms. No commission. No paywall for owners.</p>
+          <p class="mt-6 max-w-2xl text-lg leading-8 text-slate-600">For owners planning a trade sale, EOT, MBO, succession or partial exit, compare specialist UK firms by sector, deal size and location. You contact firms directly; we do not sell your details or take a cut.</p>
           <div class="mt-8 flex flex-wrap gap-3">
             <a href="/advisors/" class="button-primary">Browse advisors</a>
             <a href="/routes/" class="button-secondary">Browse exit routes</a>
+          </div>
+          <div class="mt-8 flex flex-wrap items-center gap-3 rounded-3xl border border-line bg-white/70 px-4 py-3 text-sm text-calm shadow-soft">
+            <span class="font-medium text-ink">Edited by Rehan Baig</span>
+            <span>London</span>
+            <a href="/about/" class="underline decoration-stone-300 underline-offset-4 hover:text-ink">About the editorial approach</a>
           </div>
         </div>
 
@@ -101,61 +113,78 @@ const organizationJsonLd = {
   </section>
 
   <section class="container-page py-12 sm:py-16">
-    <SectionHeading eyebrow="Directory highlights" title="A tighter selection across routes, sectors and locations." copy="Currently an editorial selection. Paid placements, where available, are clearly labelled." />
-    <div class="mt-8 grid gap-5 lg:grid-cols-2 xl:grid-cols-3">
-      {featuredAdvisors.map((advisor) => advisor ? <FeaturedAdvisorCard advisor={advisor} /> : null)}
+    <div class="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
+      <div class="max-w-xl">
+        <p class="eyebrow">Editor’s picks</p>
+        <h2 class="section-title mt-2">Firms the editor thinks are worth a closer look.</h2>
+        <p class="section-copy">These are the advisory firms with visible exit work, a sensible public record and enough depth to matter to owners comparing routes. The list is short on purpose.</p>
+        <div class="mt-6 rounded-3xl border border-line bg-paper/70 p-5 shadow-soft">
+          <p class="text-sm font-medium text-ink">Editorial rule</p>
+          <p class="mt-2 text-sm leading-7 text-calm">If a firm cannot show public, relevant exit work, it does not make the front page.</p>
+        </div>
+      </div>
+      <div class="grid gap-5 sm:grid-cols-2">
+        {featuredAdvisors.map((advisor) => advisor ? <FeaturedAdvisorCard advisor={advisor} /> : null)}
+      </div>
     </div>
   </section>
 
   <section class="container-page py-16 sm:py-20">
-    <SectionHeading eyebrow="Owners" title="Why owners use this site" />
-    <div class="mt-10 card p-6">
-      <ul class="space-y-4 text-sm leading-7 text-slate-600">
-        <li><span class="font-medium text-slate-900">Independent</span> - No firm pays to rank higher in search. Listings are ordered by sector fit and location.</li>
-        <li><span class="font-medium text-slate-900">Specialist only</span> - Every firm listed has verifiable exit-advisory work. We don't list generalists.</li>
-        <li><span class="font-medium text-slate-900">No lead forms</span> - Contact firms directly. We don't capture or sell your details.</li>
-      </ul>
+    <SectionHeading eyebrow="Activity" title="Recent deals advised" copy="A more newspaper-style view of public transaction examples." />
+    <div class="mt-8 overflow-hidden rounded-3xl border border-line bg-white shadow-soft">
+      <table class="min-w-full divide-y divide-line text-left text-sm">
+        <thead class="bg-paper/70 text-xs uppercase tracking-[0.14em] text-calm">
+          <tr>
+            <th class="px-5 py-4 font-semibold">Company</th>
+            <th class="px-5 py-4 font-semibold">Transaction</th>
+            <th class="px-5 py-4 font-semibold">Adviser</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-line/70">
+          {recentDeals.map((deal) => (
+            <tr class="hover:bg-paper/35">
+              <td class="px-5 py-4 align-top font-medium text-ink">{deal.client}</td>
+              <td class="px-5 py-4 align-top text-calm">{deal.description}</td>
+              <td class="px-5 py-4 align-top">
+                <a href={`/advisors/${deal.firmSlug}/`} class="font-medium text-ink underline decoration-stone-300 underline-offset-4 hover:text-accent">{deal.firmName}</a>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   </section>
 
   <section class="container-page py-8">
-    <SectionHeading eyebrow="Activity" title="Recent deals advised" copy="Examples drawn from the public deal notes already in the directory." />
-    <div class="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-      {recentDeals.map((deal) => (
-        <article class="card flex h-full flex-col p-6">
-          <h3 class="text-lg font-semibold text-slate-900">{deal.client}</h3>
-          <p class="mt-2 text-sm leading-6 text-slate-600">{deal.description}</p>
-          <div class="mt-6 text-sm text-slate-600">
-            <span class="font-medium text-slate-900">Adviser:</span>{' '}
-            <a href={`/advisors/${deal.firmSlug}/`} class="underline decoration-stone-300 underline-offset-4 hover:text-slate-900">{deal.firmName} →</a>
-          </div>
-        </article>
-      ))}
-    </div>
-  </section>
-
-  <section class="container-page py-8">
-    <SectionHeading eyebrow="Exit routes" title="Compare by route" />
-    <div class="mt-8 grid gap-4 md:grid-cols-3">
-      {routes.map((route) => <RouteCard route={route} />)}
+    <SectionHeading eyebrow="Exit routes" title="Compare the main routes" copy="A quick way to see where each route fits and which page to open next." />
+    <div class="mt-8 overflow-hidden rounded-3xl border border-line bg-white shadow-soft">
+      <table class="min-w-full divide-y divide-line text-left text-sm">
+        <thead class="bg-paper/70 text-xs uppercase tracking-[0.14em] text-calm">
+          <tr>
+            <th class="px-5 py-4 font-semibold">Route</th>
+            <th class="px-5 py-4 font-semibold">Best for</th>
+            <th class="px-5 py-4 font-semibold">Guide</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-line/70">
+          {routes.map((route) => (
+            <tr class="hover:bg-paper/35">
+              <td class="px-5 py-4 align-top font-medium text-ink">{route.name}</td>
+              <td class="px-5 py-4 align-top text-calm">{routeNotes[route.slug]}</td>
+              <td class="px-5 py-4 align-top">
+                <a href={`/routes/${route.slug}/`} class="font-medium text-ink underline decoration-stone-300 underline-offset-4 hover:text-accent">Open page</a>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   </section>
 
   <section class="container-page py-16">
-    <SectionHeading eyebrow="Adviser types" title="Specialists by need" />
+    <SectionHeading eyebrow="Adviser types" title="Specialists by need" copy="Use the service pages to compare matching firms and the type of advice they provide." />
     <div class="mt-8 grid gap-4 md:grid-cols-3">
       {services.map((service) => <ServiceCard service={service} />)}
-    </div>
-  </section>
-
-  <section class="container-page py-16">
-    <SectionHeading eyebrow="How it works" title="Search. Compare. Contact." />
-    <div class="mt-8 card p-6">
-      <div class="grid gap-4 md:grid-cols-3">
-        <div><p class="font-medium text-slate-900">1. Search</p><p class="mt-2 text-sm text-slate-600">By route or location.</p></div>
-        <div><p class="font-medium text-slate-900">2. Compare</p><p class="mt-2 text-sm text-slate-600">See the essentials.</p></div>
-        <div><p class="font-medium text-slate-900">3. Contact</p><p class="mt-2 text-sm text-slate-600">Go direct or claim.</p></div>
-      </div>
     </div>
   </section>
 
@@ -164,9 +193,7 @@ const organizationJsonLd = {
       <div>
         <p class="eyebrow">For advisors</p>
         <h2 class="mt-2 text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">Get in front of owners actively planning an exit.</h2>
-        <p class="mt-3 text-base leading-7 text-slate-600">Free listing by default.</p>
-        <p class="text-base leading-7 text-slate-600">Paid upgrades are clearly labelled.</p>
-        <p class="text-base leading-7 text-slate-600">Main search results stay neutral.</p>
+        <p class="mt-3 text-base leading-7 text-slate-600">Free listing by default. Optional paid upgrades are clearly labelled, and the main directory stays editorially neutral.</p>
         <div class="mt-6 flex flex-wrap gap-3">
           <a href="/for-advisors/" class="button-primary">View advisor options</a>
           <a href="/contact/" class="button-secondary">Claim or correct a profile</a>

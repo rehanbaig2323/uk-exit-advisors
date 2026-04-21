@@ -1,35 +1,44 @@
 ---
 import Layout from '@/components/Layout.astro';
-
-// TODO: add the owner's name and short bio here.
 ---
 
 <Layout fullTitle="About — UK Exit Advisors" description="Editorial policy and site ownership for UK Exit Advisors.">
   <section class="container-page py-16 sm:py-20">
     <div class="max-w-4xl">
       <p class="eyebrow">About</p>
-      <h1 class="mt-3 text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">Editorial and ownership</h1>
+      <h1 class="mt-3 text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">An editorial directory, not a scraped list.</h1>
 
-      <div class="mt-8 grid gap-5">
-        <div class="card p-6">
-          <h2 class="text-lg font-semibold text-slate-900">Who runs the site</h2>
-          <p class="mt-3 text-sm leading-7 text-slate-600">UK Exit Advisors is an independent directory run by Rehan Baig, based in London. Editorial enquiries: info@ukexitadvisors.co.uk</p>
+      <div class="mt-8 grid gap-6 lg:grid-cols-[0.85fr_1.15fr] lg:items-start">
+        <div class="card-subtle p-6 sm:p-8">
+          <div class="rounded-3xl border border-line bg-paper/70 p-5">
+            <div class="aspect-[4/5] rounded-2xl border border-dashed border-line bg-[linear-gradient(135deg,rgba(255,255,255,0.72),rgba(237,229,216,0.95))]"></div>
+            <p class="mt-4 text-xs uppercase tracking-[0.18em] text-brass">Headshot pending</p>
+            <p class="mt-1 text-lg font-semibold text-ink">Rehan Baig</p>
+            <p class="mt-2 text-sm leading-7 text-calm">Founder and editor, based in London. A real portrait and fuller bio can be added here once final assets are ready.</p>
+          </div>
         </div>
 
-        <div class="card p-6">
-          <h2 class="text-lg font-semibold text-slate-900">Editorial stance</h2>
-          <p class="mt-3 text-sm leading-7 text-slate-600">Every listed firm must have verifiable public exit-advisory work. We also review regulatory status and professional memberships where they are relevant to the firm&apos;s service mix, using public evidence rather than self-description alone.</p>
-          <p class="mt-3 text-sm leading-7 text-slate-600">Supporting signals can include public FCA authorisation where relevant, plus membership or ranking evidence from bodies and publications such as the Employee Ownership Association, ICAEW Corporate Finance Faculty, The Legal 500 and Chambers.</p>
-        </div>
+        <div class="grid gap-5">
+          <div class="card p-6">
+            <h2 class="text-lg font-semibold text-slate-900">Who runs the site</h2>
+            <p class="mt-3 text-sm leading-7 text-slate-600">UK Exit Advisors is run by Rehan Baig from London. The site is edited like a publication: listings are checked against public evidence, the front page is curated, and the writing is intended to help owners make a sensible first comparison.</p>
+          </div>
 
-        <div class="card p-6">
-          <h2 class="text-lg font-semibold text-slate-900">How firms are added</h2>
-          <p class="mt-3 text-sm leading-7 text-slate-600">We add firms through outbound outreach and claim-and-verify requests. Listings are checked before publication, and existing firms can request corrections or removal.</p>
-        </div>
+          <div class="card p-6">
+            <h2 class="text-lg font-semibold text-slate-900">Editorial stance</h2>
+            <p class="mt-3 text-sm leading-7 text-slate-600">Every listed firm must have verifiable public exit-advisory work. We also review regulatory status and professional memberships where they are relevant to the firm&apos;s service mix, using public evidence rather than self-description alone.</p>
+            <p class="mt-3 text-sm leading-7 text-slate-600">Supporting signals can include public FCA authorisation where relevant, plus membership or ranking evidence from bodies and publications such as the Employee Ownership Association, ICAEW Corporate Finance Faculty, The Legal 500 and Chambers.</p>
+          </div>
 
-        <div class="card p-6">
-          <h2 class="text-lg font-semibold text-slate-900">Commercial model</h2>
-          <p class="mt-3 text-sm leading-7 text-slate-600">Free listings are the default. Optional paid upgrades can add more detail and clearly labelled placement in featured areas. The site does not take commission on deals.</p>
+          <div class="card p-6">
+            <h2 class="text-lg font-semibold text-slate-900">How firms are added</h2>
+            <p class="mt-3 text-sm leading-7 text-slate-600">We add firms through outbound outreach and claim-and-verify requests. Listings are checked before publication, and existing firms can request corrections or removal.</p>
+          </div>
+
+          <div class="card p-6">
+            <h2 class="text-lg font-semibold text-slate-900">Commercial model</h2>
+            <p class="mt-3 text-sm leading-7 text-slate-600">Free listings are the default. Optional paid upgrades can add more detail and clearly labelled placement in featured areas. The site does not take commission on deals.</p>
+          </div>
         </div>
       </div>
     </div>
