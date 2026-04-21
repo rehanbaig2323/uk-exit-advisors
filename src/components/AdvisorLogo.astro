@@ -30,6 +30,14 @@ const fallbackBadgeClasses = {
   md: 'h-9 w-9',
   lg: 'h-10 w-10',
 };
+
+const fallbackMarkup = `
+  <div class="flex items-center justify-center rounded-[inherit] bg-gradient-to-br from-stone-100 via-stone-50 to-stone-200 ${sizeClasses[resolvedSize]}" aria-hidden="true">
+    <div class="flex items-center justify-center rounded-full border border-stone-300 bg-white shadow-sm ${fallbackBadgeClasses[resolvedSize]}">
+      <div class="h-3.5 w-3.5 rounded-full border border-stone-400/80"></div>
+    </div>
+  </div>
+`;
 ---
 
 <div class={`relative flex shrink-0 items-center justify-center overflow-hidden border border-stone-200 bg-white/90 shadow-sm ${sizeClasses[resolvedSize]} ${className}`}>
@@ -43,12 +51,13 @@ const fallbackBadgeClasses = {
       referrerpolicy="no-referrer"
       data-logo-state="primary"
       data-fallback-src={fallbackSrc}
-      onerror={`const img = this; const fallback = img.nextElementSibling; if (img.dataset.logoState === 'fallback' || !img.dataset.fallbackSrc) { img.style.display = 'none'; if (fallback) fallback.hidden = false; return; } img.dataset.logoState = 'fallback'; img.src = img.dataset.fallbackSrc;`}
+      onerror={`const img = this; const wrap = img.parentElement; if (!wrap) return; if (img.dataset.logoState === 'fallback' || !img.dataset.fallbackSrc) { wrap.innerHTML = ${JSON.stringify(fallbackMarkup)}; return; } img.dataset.logoState = 'fallback'; img.src = img.dataset.fallbackSrc;`}
     />
-  ) : null}
-  <div hidden={Boolean(primarySrc)} class={`flex items-center justify-center rounded-[inherit] bg-gradient-to-br from-stone-100 via-stone-50 to-stone-200 ${sizeClasses[resolvedSize]}`} aria-hidden="true">
-    <div class={`rounded-full border border-stone-300 bg-white shadow-sm ${fallbackBadgeClasses[resolvedSize]} flex items-center justify-center`}>
-      <div class="h-3.5 w-3.5 rounded-full border border-stone-400/80" />
+  ) : (
+    <div class={`flex items-center justify-center rounded-[inherit] bg-gradient-to-br from-stone-100 via-stone-50 to-stone-200 ${sizeClasses[resolvedSize]}`} aria-hidden="true">
+      <div class={`flex items-center justify-center rounded-full border border-stone-300 bg-white shadow-sm ${fallbackBadgeClasses[resolvedSize]}`}>
+        <div class="h-3.5 w-3.5 rounded-full border border-stone-400/80" />
+      </div>
     </div>
-  </div>
+  )}
 </div>
