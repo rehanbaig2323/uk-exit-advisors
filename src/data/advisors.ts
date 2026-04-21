@@ -45,6 +45,7 @@ function toAdvisor(raw: RawAdvisor, index: number): Advisor {
     logo: raw.logo || raw.logoUrl || undefined,
     logoUrl: raw.logoUrl || raw.logo || undefined,
     location: raw.hq_city || '',
+    sectors: raw.sectors || [],
     services: raw.adviser_types || [],
     exitRoutes: raw.exit_routes || [],
     shortDescription: raw.short_description,

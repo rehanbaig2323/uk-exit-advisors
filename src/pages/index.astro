@@ -7,9 +7,10 @@ import { site } from '@/lib/site';
 import { advisorsData } from '@/data/advisors';
 import { routes } from '@/data/routes';
 import { services } from '@/data/services';
+import { getSupportedSectorPages, getSupportedLocationPages, getMatchingSectorAdvisors, getMatchingLocationAdvisors } from '@/data/seo';
 
 const pageTitle = 'UK Exit Advisors — the independent directory of UK business-exit firms';
-const pageDescription = 'Compare 15 specialist UK exit advisors across trade sale, EOT, MBO, succession and partial exit. Curated for owners who want a serious first comparison.';
+const pageDescription = 'Compare 15 specialist UK exit advisors across trade sale, EOT, MBO, succession and partial exit, plus sector and city landing pages for long-tail searches.';
 const firmCount = advisorsData.length;
 const buildDate = new Date();
 const reviewMonth = new Date(buildDate.getFullYear(), buildDate.getMonth(), 1);
@@ -52,6 +53,9 @@ const recentDeals = [
   { client: 'TTP Group', description: '£276 million transition to an Employee Ownership Trust', firmSlug: 'rve-corporate-finance', firmName: 'RVE Corporate Finance' },
   { client: 'Synergy Vision', description: 'Transition to Employee Ownership Trust', firmSlug: 'postlethwaite-solicitors', firmName: 'Postlethwaite Solicitors' },
 ];
+
+const sectorHubPages = getSupportedSectorPages();
+const locationHubPages = getSupportedLocationPages();
 
 const organizationJsonLd = {
   '@context': 'https://schema.org',
@@ -126,6 +130,31 @@ const organizationJsonLd = {
       <div class="grid gap-5 sm:grid-cols-2">
         {featuredAdvisors.map((advisor) => advisor ? <FeaturedAdvisorCard advisor={advisor} /> : null)}
       </div>
+    </div>
+  </section>
+
+  <section class="container-page py-16 sm:py-20">
+    <SectionHeading eyebrow="SEO hubs" title="Sector and location landing pages" copy="The strongest indexable entry points for long-tail exit-advisor searches." />
+    <div class="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+      {sectorHubPages.map((page) => (
+        <a href={`/sectors/${page.slug}/`} class="card block p-6 hover:-translate-y-0.5 hover:shadow-soft">
+          <h3 class="text-lg font-semibold text-slate-900">{page.h1}</h3>
+          <p class="mt-2 text-sm leading-6 text-slate-600">{page.description}</p>
+          <p class="mt-4 text-sm font-medium text-ink">{getMatchingSectorAdvisors(page.slug).length} matching firms →</p>
+        </a>
+      ))}
+      {locationHubPages.map((page) => (
+        <a href={`/locations/${page.slug}/`} class="card block p-6 hover:-translate-y-0.5 hover:shadow-soft">
+          <h3 class="text-lg font-semibold text-slate-900">{page.h1}</h3>
+          <p class="mt-2 text-sm leading-6 text-slate-600">{page.description}</p>
+          <p class="mt-4 text-sm font-medium text-ink">{getMatchingLocationAdvisors(page.slug).length} matching firms →</p>
+        </a>
+      ))}
+      <a href="/methodology/" class="card block p-6 hover:-translate-y-0.5 hover:shadow-soft">
+        <h3 class="text-lg font-semibold text-slate-900">Methodology</h3>
+        <p class="mt-2 text-sm leading-6 text-slate-600">How firms are selected, checked and reviewed.</p>
+        <p class="mt-4 text-sm font-medium text-ink">Read the editorial policy →</p>
+      </a>
     </div>
   </section>
 

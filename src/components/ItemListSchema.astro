@@ -1,0 +1,19 @@
+---
+const { items, itemType = 'https://schema.org/WebPage' } = Astro.props;
+
+const itemListJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  itemListElement: items.map((item, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    item: {
+      '@type': itemType,
+      name: item.name,
+      url: new URL(item.href, Astro.site).toString(),
+    },
+  })),
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(itemListJsonLd)} />

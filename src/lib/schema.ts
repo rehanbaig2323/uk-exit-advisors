@@ -11,6 +11,7 @@ export const advisorSchema = z.object({
   slug: z.string(),
   name: z.string(),
   location: z.string(),
+  sectors: z.array(z.string()).optional(),
   logo: optionalUrlSchema,
   logoUrl: optionalUrlSchema,
   services: z.array(z.string()),

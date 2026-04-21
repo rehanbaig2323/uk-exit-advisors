@@ -1,8 +1,10 @@
 ---
 import AdvisorLogo from '@/components/AdvisorLogo.astro';
+import { getAdvisorLinks } from '@/data/seo';
 
 const { advisor } = Astro.props;
 const claimUrl = `mailto:info@ukexitadvisors.co.uk?subject=Claim%20or%20correct%20profile%20for%20${encodeURIComponent(advisor.name)}`;
+const links = getAdvisorLinks(advisor);
 ---
 
 <article class="card flex h-full flex-col p-6">
@@ -17,10 +19,13 @@ const claimUrl = `mailto:info@ukexitadvisors.co.uk?subject=Claim%20or%20correct%
   <p class="mt-4 text-sm leading-6 text-slate-600">{advisor.shortDescription}</p>
   <div class="mt-5 space-y-3">
     <div class="flex flex-wrap gap-2">
-      {advisor.services.map((service) => <span class="rounded-full bg-stone-100 px-3 py-1 text-xs text-slate-600">{service}</span>)}
+      {links.services.map((service) => <a href={service.href} class="rounded-full bg-stone-100 px-3 py-1 text-xs text-slate-600 hover:text-slate-900">{service.label}</a>)}
     </div>
     <div class="flex flex-wrap gap-2">
-      {advisor.exitRoutes.map((route) => <span class="rounded-full bg-stone-100 px-3 py-1 text-xs text-slate-600">{route}</span>)}
+      {links.routes.map((route) => <a href={route.href} class="rounded-full bg-stone-100 px-3 py-1 text-xs text-slate-600 hover:text-slate-900">{route.label}</a>)}
+    </div>
+    <div class="flex flex-wrap gap-2">
+      {links.sectors.map((sector) => <a href={sector.href} class="rounded-full bg-stone-100 px-3 py-1 text-xs text-slate-600 hover:text-slate-900">{sector.label}</a>)}
     </div>
   </div>
   <dl class="mt-6 grid gap-3 text-sm text-slate-600">

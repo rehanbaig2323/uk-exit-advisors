@@ -15,11 +15,16 @@ const pageDescription = description ?? site.description;
 
 <title>{pageTitle}</title>
 <meta name="description" content={pageDescription} />
+<meta name="author" content="Rehan Baig" />
+<meta name="robots" content="index,follow" />
 <link rel="canonical" href={canonical ?? new URL(Astro.url.pathname, Astro.site).toString()} />
 <meta property="og:site_name" content={site.name} />
 <meta property="og:title" content={pageTitle} />
 <meta property="og:description" content={pageDescription} />
 <meta property="og:type" content="website" />
+<meta property="og:url" content={canonical ?? new URL(Astro.url.pathname, Astro.site).toString()} />
 {image ? <meta property="og:image" content={image} /> : null}
+<meta name="twitter:title" content={pageTitle} />
+<meta name="twitter:description" content={pageDescription} />
 <meta name="twitter:card" content="summary_large_image" />
 {image ? <meta name="twitter:image" content={image} /> : null}

@@ -3,11 +3,24 @@ import Layout from '@/components/Layout.astro';
 import SectionHeading from '@/components/SectionHeading.astro';
 import AdvisorCard from '@/components/AdvisorCard.astro';
 import { advisorsData, advisorFilters } from '@/data/advisors';
+import { getSupportedSectorPages, getSupportedLocationPages } from '@/data/seo';
+import ItemListSchema from '@/components/ItemListSchema.astro';
+
+const sectorPages = getSupportedSectorPages();
+const locationPages = getSupportedLocationPages();
+const itemList = advisorsData.map((advisor) => ({ name: advisor.name, href: `/advisors/${advisor.slug}/` }));
 ---
 
 <Layout fullTitle="Advisors — UK Exit Advisors" description="Browse UK exit advisers with search, filters and verified profile metadata.">
+  <ItemListSchema items={itemList} itemType="https://schema.org/ProfessionalService" />
   <section class="container-page py-16 sm:py-20">
     <SectionHeading eyebrow="Directory" title="Compare UK exit advisors" copy="Search by firm, location, route or service. Every card keeps the same metadata structure so comparisons stay easy." />
+
+    <div class="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+      {sectorPages.slice(0, 3).map((page) => <a href={`/sectors/${page.slug}/`} class="card p-5 text-sm font-medium text-ink hover:-translate-y-0.5 hover:shadow-soft">Sector: {page.h1}</a>)}
+      {locationPages.map((page) => <a href={`/locations/${page.slug}/`} class="card p-5 text-sm font-medium text-ink hover:-translate-y-0.5 hover:shadow-soft">Location: {page.h1}</a>)}
+      <a href="/methodology/" class="card p-5 text-sm font-medium text-ink hover:-translate-y-0.5 hover:shadow-soft">Methodology</a>
+    </div>
 
     <div class="mt-8 grid gap-4 rounded-2xl border border-stone-200 bg-white p-4 shadow-soft lg:grid-cols-4">
       <label class="block">

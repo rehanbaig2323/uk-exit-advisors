@@ -1,71 +1,85 @@
 ---
 import Layout from '@/components/Layout.astro';
 import AdvisorCard from '@/components/AdvisorCard.astro';
+import Breadcrumbs from '@/components/Breadcrumbs.astro';
+import ItemListSchema from '@/components/ItemListSchema.astro';
 import { advisorsData } from '@/data/advisors';
 import { routes } from '@/data/routes';
+import { getRouteGuide, getBreadcrumbItems, getPageCanonical } from '@/data/seo';
 
 export function getStaticPaths() {
   return routes.map((route) => ({ params: { slug: route.slug }, props: { route } }));
 }
 
 const { route } = Astro.props;
+const guide = getRouteGuide(route.slug);
 
-const routeKeywords: Record<string, string[]> = {
-  'trade-sale': ['trade sale'],
-  eot: ['eot', 'employee ownership'],
-  mbo: ['mbo'],
-  succession: ['succession'],
-  'partial-exit': ['partial exit', 'investment'],
-};
-
-const compareRoutes = route.compareWith
-  .map((name: string) => routes.find((item) => item.name === name))
+const compareRoutes = guide.compareWith
+  .map((name: string) => routes.find((item) => item.name.toLowerCase() === name.toLowerCase() || item.slug === name))
   .filter((item): item is (typeof routes)[number] => Boolean(item));
 
-const advisors = advisorsData.filter((advisor) => {
-  const keywords = routeKeywords[route.slug] || [route.name.toLowerCase()];
-  return advisor.exitRoutes.some((exitRoute) =>
-    keywords.some((keyword) => exitRoute.toLowerCase().includes(keyword)),
-  );
-}).sort((a, b) => {
-  const routeKeywordsList = routeKeywords[route.slug] || [route.name.toLowerCase()];
+const advisors = guide.relatedAdvisors
+  .map((slug) => advisorsData.find((advisor) => advisor.slug === slug))
+  .filter((advisor): advisor is (typeof advisorsData)[number] => Boolean(advisor))
+  .sort((a, b) => Number(b.featured) - Number(a.featured) || a.name.localeCompare(b.name));
 
-  const score = (advisor: (typeof advisorsData)[number]) => {
-    const text = `${advisor.longDescription} ${advisor.services.join(' ')} ${advisor.exitRoutes.join(' ')}`.toLowerCase();
-    let total = 0;
+const breadcrumbItems = getBreadcrumbItems([
+  { label: 'Home', href: '/' },
+  { label: 'Exit routes', href: '/routes/' },
+  { label: guide.h1, href: `/routes/${route.slug}/` },
+]);
 
-    if (route.slug === 'eot' && advisor.advisorTypes.includes('EOT specialist')) {
-      total += 100;
-    }
+const itemList = advisors.map((advisor) => ({ name: advisor.name, href: `/advisors/${advisor.slug}/` }));
 
-    if (advisor.advisorTypes.some((type) => type.toLowerCase().includes(route.name.toLowerCase()))) {
-      total += 30;
-    }
-
-    if (routeKeywordsList.some((keyword) => text.includes(keyword))) {
-      total += 20;
-    }
-
-    if (/specialis(t|e|ing|ed)/i.test(text) && routeKeywordsList.some((keyword) => text.includes(keyword))) {
-      total += 50;
-    }
-
-    return total;
-  };
-
-  return score(b) - score(a);
-});
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: guide.faqs.map((faq) => ({
+    '@type': 'Question',
+    name: faq.question,
+    acceptedAnswer: { '@type': 'Answer', text: faq.answer },
+  })),
+};
 ---
 
-<Layout fullTitle={`${route.name} advisors in the UK — UK Exit Advisors`} description={route.summary} canonical={new URL(`/routes/${route.slug}/`, Astro.site).toString()}>
+<Layout fullTitle={`${guide.title} | UK Exit Advisors`} description={guide.description} canonical={getPageCanonical(`/routes/${route.slug}/`)}>
+  <script type="application/ld+json" set:html={JSON.stringify(faqJsonLd)} />
+  <ItemListSchema items={itemList} itemType="https://schema.org/ProfessionalService" />
   <section class="container-page py-16 sm:py-20">
     <div class="max-w-4xl">
-      <p class="eyebrow">Exit route</p>
-      <h1 class="mt-3 text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">{route.name}</h1>
-      <p class="mt-4 text-lg leading-8 text-slate-600">{route.description}</p>
-      <a href="/advisors/" class="mt-8 inline-flex rounded-full bg-slate-900 px-5 py-3 text-sm font-medium text-white hover:bg-slate-800">See all advisors →</a>
+      <Breadcrumbs items={breadcrumbItems} />
+      <p class="eyebrow mt-6">Exit route</p>
+      <h1 class="mt-3 text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">{guide.h1}</h1>
+      <p class="mt-4 text-lg leading-8 text-slate-600">{guide.description}</p>
+      <p class="mt-3 text-xs uppercase tracking-[0.18em] text-slate-500">Last updated {guide.lastUpdated}</p>
+      <div class="mt-8 space-y-6 text-base leading-8 text-slate-600">
+        {guide.intro.map((paragraph) => <p>{paragraph}</p>)}
+      </div>
+      <div class="mt-8 flex flex-wrap gap-2">
+        {compareRoutes.map((item) => <a href={`/routes/${item.slug}/`} class="rounded-full border border-stone-200 bg-white px-3 py-1 text-xs text-calm hover:border-stone-300 hover:text-ink">{item.name}</a>)}
+      </div>
 
-      <h2 class="mt-12 text-xl font-semibold tracking-tight text-slate-900">Firms that specialise in {route.name}</h2>
+      <h2 class="mt-12 text-xl font-semibold tracking-tight text-slate-900">How the route works</h2>
+      <div class="mt-6 grid gap-4 md:grid-cols-2">
+        {guide.sections.map((section) => (
+          <article class="card p-6">
+            <h3 class="text-lg font-semibold text-slate-900">{section.title}</h3>
+            <p class="mt-3 text-sm leading-7 text-slate-600">{section.body}</p>
+          </article>
+        ))}
+      </div>
+
+      <h2 class="mt-12 text-xl font-semibold tracking-tight text-slate-900">Frequently asked questions</h2>
+      <div class="mt-6 grid gap-4 md:grid-cols-2">
+        {guide.faqs.map((faq) => (
+          <article class="card p-6">
+            <h3 class="text-lg font-semibold text-slate-900">{faq.question}</h3>
+            <p class="mt-3 text-sm leading-7 text-slate-600">{faq.answer}</p>
+          </article>
+        ))}
+      </div>
+
+      <h2 class="mt-12 text-xl font-semibold tracking-tight text-slate-900">Matching advisers</h2>
       <div class="mt-10 grid gap-5 lg:grid-cols-2 xl:grid-cols-3">
         {advisors.map((advisor) => <AdvisorCard advisor={advisor} />)}
       </div>

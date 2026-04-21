@@ -3,12 +3,17 @@ import Layout from '@/components/Layout.astro';
 import SectionHeading from '@/components/SectionHeading.astro';
 import ServiceCard from '@/components/ServiceCard.astro';
 import { services } from '@/data/services';
+import { getServicePageContent } from '@/data/service-page-content';
+import ItemListSchema from '@/components/ItemListSchema.astro';
+
+const itemList = services.map((service) => ({ name: service.name, href: `/services/${service.slug}/` }));
 
 const pageTitle = 'Adviser services — UK Exit Advisors';
 const pageDescription = 'Compare the main adviser categories used in UK exit planning, from corporate finance to legal, tax and employee ownership support.';
 ---
 
 <Layout fullTitle={pageTitle} description={pageDescription} canonical={new URL('/services/', Astro.site).toString()}>
+  <ItemListSchema items={itemList} />
   <section class="container-page py-16 sm:py-20">
     <div class="max-w-3xl">
       <p class="eyebrow">Adviser services</p>
@@ -28,6 +33,18 @@ const pageDescription = 'Compare the main adviser categories used in UK exit pla
     <SectionHeading eyebrow="All services" title="The main adviser categories" copy="Click through to compare firms by the type of advice they provide." />
     <div class="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
       {services.map((service) => <ServiceCard service={service} />)}
+    </div>
+  </section>
+
+  <section class="container-page py-8">
+    <SectionHeading eyebrow="Guides" title="Service pages with stronger internal links" copy="Each service page now points into the route pages and matching advisers." />
+    <div class="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+      {services.map((service) => (
+        <a href={`/services/${service.slug}/`} class="card block p-6 hover:-translate-y-0.5 hover:shadow-soft">
+          <h3 class="text-lg font-semibold text-slate-900">{service.name}</h3>
+          <p class="mt-2 text-sm leading-6 text-slate-600">{getServicePageContent(service.slug)?.intro[0] ?? service.summary}</p>
+        </a>
+      ))}
     </div>
   </section>
 

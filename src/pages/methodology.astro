@@ -1,0 +1,26 @@
+---
+import Layout from '@/components/Layout.astro';
+import Breadcrumbs from '@/components/Breadcrumbs.astro';
+import { getBreadcrumbItems } from '@/data/seo';
+
+const breadcrumbItems = getBreadcrumbItems([
+  { label: 'Home', href: '/' },
+  { label: 'Methodology', href: '/methodology/' },
+]);
+---
+
+<Layout fullTitle="Methodology — UK Exit Advisors" description="How UK Exit Advisors selects, checks and updates firms.">
+  <section class="container-page py-16 sm:py-20">
+    <div class="max-w-4xl">
+      <Breadcrumbs items={breadcrumbItems} />
+      <p class="eyebrow mt-6">Methodology</p>
+      <h1 class="mt-3 text-4xl font-semibold tracking-tight text-slate-950 sm:text-5xl">How firms are selected and reviewed.</h1>
+      <div class="mt-8 space-y-6 text-base leading-8 text-slate-600">
+        <p>UK Exit Advisors is an editorial directory. Firms are selected because they show public evidence of relevant exit work, specialist positioning or a clear professional role in the transaction process. The aim is to help owners make a better first comparison, not to create the longest possible list.</p>
+        <p>Selection is based on public sources such as firm websites, deal announcements, adviser profiles, ranking pages and professional memberships where they are relevant. We look for evidence that the firm actually handles the kind of exit work the page is meant to cover. A claim on its own is not enough; the public record needs to support it.</p>
+        <p>We review the directory periodically and when new evidence appears. If a firm has a correction, update or removal request, the preferred route is to use the contact page so the listing can be checked against the public record. If a profile is incomplete, it is better to leave the gap visible than to invent details.</p>
+        <p>The site is not a broker and does not take commission on deals. Any paid placement or upgrade is clearly labelled, and the editorial directory remains separate from commercial arrangements. That separation is deliberate because the directory is meant to be useful to owners first.</p>
+      </div>
+    </div>
+  </section>
+</Layout>

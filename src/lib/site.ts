@@ -4,5 +4,5 @@ export const site = {
   headline: 'UK business exit advisors',
   subheadline: 'Find specialist UK advisers for the main exit routes.',
   description:
-    'A calm, premium directory for UK business owners comparing exit advisers across trade sales, EOTs, MBOs, succession and related specialist support.',
+    'A calm, premium directory for UK business owners comparing exit advisers across trade sales, EOTs, MBOs, succession, sectors and UK city pages.',
 };

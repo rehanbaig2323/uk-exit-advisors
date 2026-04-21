@@ -1,6 +1,8 @@
 ---
 import Layout from '@/components/Layout.astro';
 import AdvisorLogo from '@/components/AdvisorLogo.astro';
+import Breadcrumbs from '@/components/Breadcrumbs.astro';
+import { getAdvisorLinks, getBreadcrumbItems } from '@/data/seo';
 import { advisorRecords, normalizeNotableWorkItem } from '@/data/advisors';
 
 export function getStaticPaths() {
@@ -31,10 +33,18 @@ const profileDescription = (() => {
 
 const profileUrl = new URL(`/advisors/${advisor.slug}/`, Astro.site).toString();
 const ogImage = new URL(`/advisors/${advisor.slug}/og.svg/`, Astro.site).toString();
+const links = getAdvisorLinks(advisor);
+const breadcrumbItems = getBreadcrumbItems([
+  { label: 'Home', href: '/' },
+  { label: 'Advisors', href: '/advisors/' },
+  { label: advisor.firm_name, href: `/advisors/${advisor.slug}/` },
+]);
+
+const structuredDataType = (advisor.adviser_types || []).some((type) => /wealth|financial/i.test(type)) ? 'FinancialService' : 'ProfessionalService';
 
 const structuredData = {
   '@context': 'https://schema.org',
-  '@type': 'ProfessionalService',
+  '@type': structuredDataType,
   name: advisor.firm_name,
   url: advisor.website,
   description: advisor.long_description || advisor.short_description,
@@ -57,6 +67,7 @@ const claimUrl = `mailto:info@ukexitadvisors.co.uk?subject=Claim%20or%20correct%
   <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
   <section class="container-page py-16 sm:py-20">
     <div class="max-w-4xl">
+      <Breadcrumbs items={breadcrumbItems} />
       <p class="eyebrow">Advisor profile</p>
       <div class="mt-4 flex items-start gap-5 sm:gap-6">
         <AdvisorLogo advisor={advisor} size="lg" />
@@ -116,7 +127,13 @@ const claimUrl = `mailto:info@ukexitadvisors.co.uk?subject=Claim%20or%20correct%
         <div class="card p-6">
           <h2 class="text-lg font-semibold text-slate-900">Adviser types and routes</h2>
           <div class="mt-4 flex flex-wrap gap-2">
-            {tags.map((tag) => <span class="rounded-full bg-stone-100 px-3 py-1 text-xs text-slate-600">{tag}</span>)}
+            {advisor.adviser_types?.map((tag) => <span class="rounded-full bg-stone-100 px-3 py-1 text-xs text-slate-600">{tag}</span>)}
+          </div>
+          <div class="mt-4 flex flex-wrap gap-2">
+            {links.services.map((link) => <a href={link.href} class="rounded-full border border-stone-200 bg-white px-3 py-1 text-xs text-calm hover:border-stone-300 hover:text-ink">{link.label}</a>)}
+            {links.routes.map((link) => <a href={link.href} class="rounded-full border border-stone-200 bg-white px-3 py-1 text-xs text-calm hover:border-stone-300 hover:text-ink">{link.label}</a>)}
+            {links.sectors.map((link) => <a href={link.href} class="rounded-full border border-stone-200 bg-white px-3 py-1 text-xs text-calm hover:border-stone-300 hover:text-ink">{link.label}</a>)}
+            {links.locations.map((link) => <a href={link.href} class="rounded-full border border-stone-200 bg-white px-3 py-1 text-xs text-calm hover:border-stone-300 hover:text-ink">{link.label}</a>)}
           </div>
         </div>
         <div class="card p-6">
