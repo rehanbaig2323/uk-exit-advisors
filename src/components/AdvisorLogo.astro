@@ -2,7 +2,6 @@
 import {
   getAdvisorDisplayName,
   getAdvisorFaviconUrl,
-  getAdvisorInitials,
   getAdvisorLogoUrl,
 } from '@/lib/advisor-logo';
 
@@ -12,7 +11,6 @@ const explicitLogo = getAdvisorLogoUrl(advisor);
 const faviconUrl = getAdvisorFaviconUrl(advisor);
 const primarySrc = explicitLogo || faviconUrl;
 const fallbackSrc = explicitLogo ? faviconUrl : '';
-const initials = getAdvisorInitials(advisor);
 const resolvedSize = ['sm', 'md', 'lg'].includes(size) ? size : 'md';
 
 const sizeClasses = {
@@ -27,10 +25,10 @@ const paddingClasses = {
   lg: 'p-3',
 };
 
-const textClasses = {
-  sm: 'text-[0.72rem] tracking-[0.2em]',
-  md: 'text-[0.8rem] tracking-[0.2em]',
-  lg: 'text-[0.9rem] tracking-[0.22em]',
+const fallbackBadgeClasses = {
+  sm: 'h-8 w-8',
+  md: 'h-9 w-9',
+  lg: 'h-10 w-10',
 };
 ---
 
@@ -45,10 +43,12 @@ const textClasses = {
       referrerpolicy="no-referrer"
       data-logo-state="primary"
       data-fallback-src={fallbackSrc}
-      onerror={`const img = this; if (img.dataset.logoState === 'fallback' || !img.dataset.fallbackSrc) { img.style.display = 'none'; const fallback = img.nextElementSibling; if (fallback) fallback.hidden = false; return; } img.dataset.logoState = 'fallback'; img.src = img.dataset.fallbackSrc;`}
+      onerror={`const img = this; const fallback = img.nextElementSibling; if (img.dataset.logoState === 'fallback' || !img.dataset.fallbackSrc) { img.style.display = 'none'; if (fallback) fallback.hidden = false; return; } img.dataset.logoState = 'fallback'; img.src = img.dataset.fallbackSrc;`}
     />
   ) : null}
-  <span hidden={!primarySrc} class={`flex h-full w-full items-center justify-center rounded-[inherit] bg-slate-950 font-semibold text-white ${textClasses[resolvedSize]}`}>
-    {initials}
-  </span>
+  <div hidden={Boolean(primarySrc)} class={`flex items-center justify-center rounded-[inherit] bg-gradient-to-br from-stone-100 via-stone-50 to-stone-200 ${sizeClasses[resolvedSize]}`} aria-hidden="true">
+    <div class={`rounded-full border border-stone-300 bg-white shadow-sm ${fallbackBadgeClasses[resolvedSize]} flex items-center justify-center`}>
+      <div class="h-3.5 w-3.5 rounded-full border border-stone-400/80" />
+    </div>
+  </div>
 </div>
