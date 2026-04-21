@@ -1,13 +1,15 @@
 ---
 import {
   getAdvisorDisplayName,
+  getAdvisorFaviconUrl,
   getAdvisorLogoUrl,
 } from '@/lib/advisor-logo';
 
 const { advisor, size = 'md', class: className = '' } = Astro.props;
 const name = getAdvisorDisplayName(advisor);
 const explicitLogo = getAdvisorLogoUrl(advisor);
-const primarySrc = explicitLogo;
+const faviconUrl = getAdvisorFaviconUrl(advisor);
+const primarySrc = explicitLogo || faviconUrl;
 const resolvedSize = ['sm', 'md', 'lg'].includes(size) ? size : 'md';
 
 const sizeClasses = {
@@ -21,16 +23,17 @@ const paddingClasses = {
   md: 'p-2.5',
   lg: 'p-3',
 };
+
 const fallbackClasses = {
   sm: 'p-0.5',
   md: 'p-0.5',
   lg: 'p-1',
 };
 
-const fallbackMarkup = `<div class="h-full w-full rounded-[inherit] bg-[linear-gradient(135deg,rgba(243,237,229,0.96),rgba(233,224,211,0.92))] border border-stone-200" aria-hidden="true"></div>`;
+const fallbackMarkup = `<div class="h-full w-full rounded-[inherit] border border-stone-200/80 bg-transparent" aria-hidden="true"></div>`;
 ---
 
-<div class={`relative flex shrink-0 items-center justify-center overflow-hidden border border-stone-200 bg-paper/90 shadow-sm ${sizeClasses[resolvedSize]} ${className}`}>
+<div class={`relative flex shrink-0 items-center justify-center overflow-hidden bg-transparent ${sizeClasses[resolvedSize]} ${className}`}>
   {primarySrc ? (
     <img
       src={primarySrc}
@@ -42,6 +45,6 @@ const fallbackMarkup = `<div class="h-full w-full rounded-[inherit] bg-[linear-g
       onerror={`const img = this; const wrap = img.parentElement; if (!wrap) return; if (img.dataset.logoState === 'fallback') { wrap.innerHTML = ${JSON.stringify(fallbackMarkup)}; return; } img.dataset.logoState = 'fallback'; wrap.innerHTML = ${JSON.stringify(fallbackMarkup)};`}
     />
   ) : (
-    <div class={`h-full w-full rounded-[inherit] border border-stone-200 bg-[linear-gradient(135deg,rgba(243,237,229,0.96),rgba(233,224,211,0.92))] ${fallbackClasses[resolvedSize]}`} aria-hidden="true" />
+    <div class={`h-full w-full rounded-[inherit] border border-stone-200/80 bg-transparent ${fallbackClasses[resolvedSize]}`} aria-hidden="true" />
   )}
 </div>
